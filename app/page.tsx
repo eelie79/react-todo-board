@@ -1,101 +1,68 @@
-import Image from "next/image";
+"use client";
+
+import { supabase } from "@/utils/supabase";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
+// import { useRouter } from "next/compat/router";
+
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+
+import styles from "./page.module.scss";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // 페이지 생성 및 Supabase 연동 배열 데이터
+  const onCreate = async () => {
+    // Supabase 데이터 베이스 insert row 생성
+    const { error, status } = await supabase
+      .from("todos")
+      .insert([
+        {
+          title: "",
+          start_date: new Date(),
+          end_date: new Date(),
+          contents: [],
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.log(error);
+    }
+
+    console.log("status: ", status); // status:  201
+
+    // 생성된 직후에 데이터 전달
+    // 방금 생성한 TODO LIST의 ID 값으로 URL 생성/변경 -> Next.js 동적 라우팅(Dynamic Routing)
+    let { data } = await supabase.from("todos").select(""); // 만든 데이터 불러오기기
+
+    if (status === 201) {
+      toast({
+        title: "페이지 생성 완료!",
+        description: "새로운 투두리스트가 생성 되었습니다!",
+      });
+
+      if (data) {
+        router.push(`/create/${data[data?.length - 1].id}`); // supabase 동적라우팅 마지막 값을 불러오기
+      } else return;
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.container__onBoarding}>
+        <span className={styles.container__onBoarding__title}>How To Start</span>
+        <div className={styles.container__onBoarding__steps}>
+          <span>1. create a page</span>
+          <span>2. Add boards to page</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        {/* 페이지 추가 버튼 / onClick={() => router.push("/create")} */}
+        <Button variant="outline" className="w-full bg-transparent text-orange-500 border-orange-400 hover:bg-orange-50 hover:text-500" onClick={onCreate}>
+          Add New Page
+        </Button>
+      </div>
     </div>
   );
 }
