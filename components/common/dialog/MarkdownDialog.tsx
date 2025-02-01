@@ -38,17 +38,16 @@ interface Props {
 }
 
 export default function MarkdownDialog({ data }: Props) {
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
   const [open, setOpen] = useState<boolean>(false); // 반응성을 가진 데이터
 
   /** 상태 값 선언 */
   const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("**Hello, World!!**");
+  const [content, setContent] = useState<string | undefined>("**Hello, World!!**");
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-  // const [content, setContent] = useState<string | undefined>("**Hello, World!!**");
 
   // const [isCompleted, setIsCompleted] = useState<boolean>(false);
   // const [title, setTitle] = useState<string>("");
@@ -68,12 +67,13 @@ export default function MarkdownDialog({ data }: Props) {
       });
       return;
     } else {
-      // 해당 보드에 대해서만 수정이 된다
+      // 해당 보드에 대한 데이터만 수정이 된다
       let { data: todos } = await supabase.from("todos").select("*");
 
       if (todos !== null) {
         todos.forEach(async (item: Todo) => {
           if (item.id === Number(pathname.split("/")[2])) {
+            // http://localhost:3000/create/78  -> 0 / 1 / 2
             item.contents.forEach((element: BoardContent) => {
               // element.boardId === "Done 버튼을 클릭했을떄 해당되는 id값과 같으면"
               // if (element.boardId === "-_qElqCyXqVyxMa1VNwgZ") {
@@ -93,6 +93,7 @@ export default function MarkdownDialog({ data }: Props) {
             // Supabase 데이터 베이스 연동
             const { data, error, status } = await supabase
               .from("todos")
+              // .insert([{ title: title, content: content }]).select()
               .update([{ contents: item.contents }])
               .eq("id", pathname.split("/")[2]);
 
@@ -111,7 +112,7 @@ export default function MarkdownDialog({ data }: Props) {
                 description: "데이터로로 작성한 글이 Supabase에 저장되었습니다.",
               });
 
-              //등록 후 조건 초기화
+              // 등록 후 조건 초기화
               setOpen(false);
             }
           }
@@ -124,12 +125,20 @@ export default function MarkdownDialog({ data }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      {/* <DialogTrigger asChild>
         <Button variant={"ghost"} className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
           Add Contents
         </Button>
-        {/* <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">Add Contents</span> */}
-      </DialogTrigger>
+      </DialogTrigger> */}
+      {data.title ? (
+        <DialogTrigger asChild>
+          <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">Update Contents</span>
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">Add Contents</span>
+        </DialogTrigger>
+      )}
       <DialogContent className="max-w-fit">
         <DialogHeader>
           <DialogTitle className={styles.dialog__titleBox}>
@@ -145,8 +154,8 @@ export default function MarkdownDialog({ data }: Props) {
           </DialogTitle>
           {/* <DialogDescription>This action cannot be undone. This will permanently delete your account and remove your data from our servers.</DialogDescription> */}
           <div className={styles.dialog__calendarBox}>
-            <LabelCalendar label="From" />
-            <LabelCalendar label="To" />
+            <LabelCalendar label="From" handleDate={setStartDate} />
+            <LabelCalendar label="To" handleDate={setEndDate} />
           </div>
           <Separator />
           <div className={styles.dialog__markdown}>
@@ -162,7 +171,12 @@ export default function MarkdownDialog({ data }: Props) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" variant={"ghost"} className="font-normal border-orange-500 bg-orange-400 text-white hover:bg-orange-400 hover:text-white" onClick={onSubmit}>
+            <Button
+              type="submit"
+              variant={"ghost"}
+              className="font-normal border-orange-500 bg-orange-400 text-white hover:bg-orange-400 hover:text-white"
+              // onClick={onSubmit}
+              onClick={() => onSubmit(data.boardId)}>
               Done
             </Button>
           </div>

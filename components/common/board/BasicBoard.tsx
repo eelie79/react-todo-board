@@ -36,11 +36,10 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
-  handleBoards: (data: Todo) => void;
 }
 
 // export default function BasicBoard({ data, handleBoards }: Props): JSX.Element {
-export default function BasicBoard({ data, handleBoards }): Props {
+export default function BasicBoard({ data }: Props) {
   // const [startDate, setStartDate] = useState<Date>();
   // const [endDate, setEndDate] = useState<Date>();
 
@@ -51,14 +50,14 @@ export default function BasicBoard({ data, handleBoards }): Props {
     console.log("handleDelete 출력 확인");
 
     // 해당 Board애 대한 데이터만 수정 혹은 삭제
-    const { data: todos } = await supabase.from("todos").select("*");
+    let { data: todos } = await supabase.from("todos").select("*"); // 모든 데이터 호출
 
     if (todos !== null) {
       todos.forEach(async (item: Todo) => {
         if (item.id === Number(pathname.split("/")[2])) {
           console.log(item);
 
-          const newContents = item.contents.filter((element: BoardContent) => {
+          let newContents = item.contents.filter((element: BoardContent) => {
             return element.boardId !== id;
           });
 
@@ -68,7 +67,7 @@ export default function BasicBoard({ data, handleBoards }): Props {
             .update({
               contents: newContents,
             })
-            .eq("id", pathname.split("/")[2]);
+            .eq("id", pathname.split("/")[2]); // 아이디와 == pathname 같으면 contents 업데이트
 
           if (error) {
             console.log(error);
@@ -120,11 +119,11 @@ export default function BasicBoard({ data, handleBoards }): Props {
       </div>
       <div className={styles.container__body}>
         <div className={styles.container__body__calendarBox}>
-          {/* <LabelCalendar label="From" />
-          <LabelCalendar label="To" /> */}
+          {/* <LabelCalendar label="From" /> <LabelCalendar label="To" /> */}
           <div className="flex items-center gap-3">
             <span className="text-[#6d6d6d]">Form</span>
-            <Input value={typeof data.startDate === "string" && data.startDate !== "" ? data.startDate.split("T")[0] : "pick a date"} disabled />
+            {/* <Input value={typeof data.startDate === "string" && data.startDate !== "" ? data.startDate.split("T")[0] : "pick a date"} disabled /> */}
+            <Input value={data.startDate !== "" ? data.startDate.split("T")[0] : "pick a date"} disabled />
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[#6d6d6d]">To</span>

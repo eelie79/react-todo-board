@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 // const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
-export const FONT_ROBOTO = Roboto({
+const FONT_ROBOTO = Roboto({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   display: "swap",
@@ -44,11 +44,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body> // className={`antialiased`}*/}
-      {/* <body className={FONT_ROBOTO.className}> */}
-      <body className={`${NOTO_SANS_KR.className} antialiased`}>
+      {/* <body className={`${NOTO_SANS_KR.className} antialiased`}> */}
+      <body className={NOTO_SANS_KR.className}>
         <SideNavigation />
         {/* app 디렉토리에 있는 page.tsx에 정의된 컴포넌트 렌더링 */}
-
         {children}
         <Toaster />
       </body>

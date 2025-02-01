@@ -31,7 +31,7 @@ interface BoardContent {
   title: string;
   startDate: string | Date;
   endDate: string | Date;
-  content: string; // 에디터 안의 입력 데이터 컨텐츠
+  content: string; // 에디터 안의 입력 텍스트 데이터 컨텐츠
 }
 
 // 샘플 BoardContent 데이터
@@ -163,7 +163,7 @@ export default function Page() {
     console.log("BoardContent: ", BoardContent);
 
     if (boards && boards.contents.length > 0) {
-      newContents = [...boards.contents];
+      newContents = [...boards.contents]; // [] board list
       newContents.push(BoardContent); // 보드 컨텐츠 1증가
       insertRowData(newContents);
       console.log("등록된 보드 컨텐츠 있음 화면출력: ", BoardContent);
@@ -182,7 +182,7 @@ export default function Page() {
     if (todos !== null) {
       console.log("todo ", todos);
       todos.forEach((item: Todo) => {
-        if (item.id === Number(pathname.split("/"[2]))) {
+        if (item.id === Number(pathname.split("/")[2])) {
           setBoards(item);
           console.log("item: ", item);
         }
@@ -237,28 +237,18 @@ export default function Page() {
             <div className={styles.container__body__infoBox}>
               <span className={styles.title}>There is no board yet.</span>
               <span className={styles.subtitle}>Click the button and start flashing!</span>
-              <Button className={styles.button}>
+              <Button className={styles.button} onClick={createBoard}>
                 <Image src="/assets/images/round-button.svg" alt="flash" width={74} height={74} />
               </Button>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-start w-full h-full gap-4">
+          <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
             {boards?.contents.map((board: BoardContent) => {
               return <BasicBoard key={board.boardId} data={board} handleBoards={setBoards} />;
             })}
           </div>
-
-          // <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
-          //   {boards?.contents.map((board: BoardContent) => {
-          //     {
-          //       /* /create 경로에서 렌더링되는 내용 중 게시물 리스트를 나타내는 Card 컴포넌트 */
-          //     }
-          //     return <BasicBoard key={board.boardId} data={board} handleBoards={setBoards} />;
-          //   })}
-          // </div>
         )}
-        {/* <BasicBoard data={board} /> */}
       </main>
     </div>
   );

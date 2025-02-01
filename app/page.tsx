@@ -1,4 +1,4 @@
-"use client";
+"use client"; // 클라이언트 컴포넌트 선언 (Next.js 13 이상에서 사용)
 
 import { supabase } from "@/utils/supabase";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import styles from "./page.module.scss";
 
 export default function Home() {
   const router = useRouter();
+  console.log(router);
 
   // 페이지 생성 및 Supabase 연동 배열 데이터
   const onCreate = async () => {
@@ -36,7 +37,7 @@ export default function Home() {
 
     // 생성된 직후에 데이터 전달
     // 방금 생성한 TODO LIST의 ID 값으로 URL 생성/변경 -> Next.js 동적 라우팅(Dynamic Routing)
-    let { data } = await supabase.from("todos").select(""); // 만든 데이터 불러오기기
+    let { data } = await supabase.from("todos").select(); // 만든 데이터 불러오기기
 
     if (status === 201) {
       toast({
@@ -59,7 +60,11 @@ export default function Home() {
           <span>2. Add boards to page</span>
         </div>
         {/* 페이지 추가 버튼 / onClick={() => router.push("/create")} */}
-        <Button variant="outline" className="w-full bg-transparent text-orange-500 border-orange-400 hover:bg-orange-50 hover:text-500" onClick={onCreate}>
+        <Button
+          variant="outline"
+          className="w-full bg-transparent text-orange-500 border-orange-400 hover:bg-orange-50 hover:text-500"
+          // onClick={()=>{router.push{"/create"}}}
+          onClick={onCreate}>
           Add New Page
         </Button>
       </div>
