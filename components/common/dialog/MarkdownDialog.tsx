@@ -146,6 +146,7 @@ export default function MarkdownDialog({ data }: Props) {
             <input
               type="text"
               placeholder="write a title for your board."
+              value={data.title ? data.title : title}
               className={styles.dialog__titleBox__title}
               onChange={(event) => {
                 setTitle(event.target.value);
@@ -160,7 +161,7 @@ export default function MarkdownDialog({ data }: Props) {
           <Separator />
           <div className={styles.dialog__markdown}>
             {/* <MDEditor height={100 + "%"} value={content} onChange={setContent} /> */}
-            <MDEditor height={100 + "%"} value={content} onChange={setContent} />
+            <MDEditor height={100 + "%"} value={data.content ? data.content : content} onChange={setContent} />
           </div>
         </DialogHeader>
 

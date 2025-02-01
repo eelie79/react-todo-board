@@ -36,10 +36,11 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
+  handleBoards: (data: Todo) => void;
 }
 
 // export default function BasicBoard({ data, handleBoards }: Props): JSX.Element {
-export default function BasicBoard({ data }: Props) {
+export default function BasicBoard({ data, handleBoards }: Props) {
   // const [startDate, setStartDate] = useState<Date>();
   // const [endDate, setEndDate] = useState<Date>();
 
@@ -93,15 +94,33 @@ export default function BasicBoard({ data }: Props) {
   };
 
   // Supabse에 기존에 생성된 보드가 있는지 없는지 확인
+  // const getData = async () => {
+  //   const { data: todos } = await supabase.from("todos").select("*");
+
+  //   if (todos !== null) {
+  //     todos.forEach((item: Todo) => {
+  //       if (item.id === Number(pathname.split("/")[2])) {
+  //         handleBoards(item);
+  //       }
+  //     });
+  //   }
+  // };
+
+  // Supabase에 기존에 생성된 보드가 있는지 없는지 확인 -> 데이터 갱신
   const getData = async () => {
-    const { data: todos } = await supabase.from("todos").select("*");
+    let { data: todos, error, status } = await supabase.from("todos").select("*"); // 전체 데이터 다 가져오기
 
     if (todos !== null) {
+      console.log("todo ", todos);
       todos.forEach((item: Todo) => {
         if (item.id === Number(pathname.split("/")[2])) {
           handleBoards(item);
         }
       });
+    }
+
+    if (error) {
+      console.log(error);
     }
   };
 
