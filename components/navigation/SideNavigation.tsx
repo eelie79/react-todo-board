@@ -19,14 +19,14 @@ export default function SideNavigation() {
   const [todos, setTodos] = useState<any>([]);
 
   const onCreate = async () => {
-    console.log("사이드네비 함수 호출");
+    // console.log("사이드네비 함수 호출");
 
     // 사이드 좌메뉴 Supabase 데이터 row 새로운 데이터 생성
     const { error, status } = await supabase.from("todos").insert([
       {
         title: "",
-        start_date: "", // from
-        end_date: "", // to
+        start_date: new Date(), // from
+        end_date: new Date(), // to
         contents: [], // boards 배열
       },
     ]);
@@ -43,7 +43,12 @@ export default function SideNavigation() {
         description: "새로운 TO DO가 생성 되었습니다!",
       });
 
-      router.push("/create");
+      // router.push("/create");
+      let { data } = await supabase.from("todos").select("*");
+      if (data) {
+        router.push(`/create/${data[data?.length - 1].id}`);
+        getTodos();
+      }
     }
     // router.push("/create");
   };
