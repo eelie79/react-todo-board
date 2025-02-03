@@ -35,9 +35,10 @@ interface BoardContent {
 
 interface Props {
   data: BoardContent;
+  updateBoards: () => void;
 }
 
-export default function MarkdownDialog({ data }: Props) {
+export default function MarkdownDialog({ data, updateBoards }: Props) {
   // const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -56,7 +57,7 @@ export default function MarkdownDialog({ data }: Props) {
   // const [content, setContent] = useState<string>("**Hello, World!!**");
   // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  // supabase 저장
+  // supabase 저장 -> onSubmit 호출시 board ID값 전달
   const onSubmit = async (id: string | number) => {
     console.log("onSubmit 함수 호출");
     // !title || !startDate || !endDate || !content
@@ -82,20 +83,15 @@ export default function MarkdownDialog({ data }: Props) {
                 element.content = content;
                 element.startDate = startDate;
                 element.endDate = endDate;
-              } else {
-                element.title = element.title;
-                element.content = element.content;
-                element.startDate = element.startDate;
-                element.endDate = element.endDate;
-              }
+              } else return;
             });
 
-            // Supabase 데이터 베이스 연동
+            // Supabase 데이터 베이스 연동 -> data 가져오기
             const { data, error, status } = await supabase
               .from("todos")
               // .insert([{ title: title, content: content }]).select()
-              .update([{ contents: item.contents }])
-              .eq("id", pathname.split("/")[2]);
+              .update([{ contents: item.contents }]) //id 값이 pathname 인 레코드를 찾아 contents 컬럼을 item.contents값으로 업데이트합니다.
+              .eq("id", pathname.split("/")[2]); // Supabase 클라이언트를 사용할 때 특정 조건을 지정하여 데이터를 필터링하는 방법입니다. .eq('id', 1)는 id 값이 1인 레코드를 선택하는 조건을 의미합니다.
 
             if (error) {
               console.log(error);
@@ -114,12 +110,11 @@ export default function MarkdownDialog({ data }: Props) {
 
               // 등록 후 조건 초기화
               setOpen(false);
+              updateBoards();
             }
           }
         });
-      } else {
-        return;
-      }
+      } else return;
     }
   };
 
@@ -155,8 +150,11 @@ export default function MarkdownDialog({ data }: Props) {
           </DialogTitle>
           {/* <DialogDescription>This action cannot be undone. This will permanently delete your account and remove your data from our servers.</DialogDescription> */}
           <div className={styles.dialog__calendarBox}>
-            <LabelCalendar label="From" handleDate={setStartDate} />
-            <LabelCalendar label="To" handleDate={setEndDate} />
+            {/* <LabelCalendar label="From" handleDate={setStartDate} />
+            <LabelCalendar label="To" handleDate={setEndDate} /> */}
+
+            <LabelCalendar label={"From"} onChange={setStartDate} />
+            <LabelCalendar label={"To"} onChange={setEndDate} />
           </div>
           <Separator />
           <div className={styles.dialog__markdown}>
@@ -176,7 +174,7 @@ export default function MarkdownDialog({ data }: Props) {
               type="submit"
               variant={"ghost"}
               className="font-normal border-orange-500 bg-orange-400 text-white hover:bg-orange-400 hover:text-white"
-              // onClick={onSubmit}
+              // onClick={onSubmit}  => onSubmit(data.boardId) 클릭이벤트 데이터 가져와서 ID전달
               onClick={() => onSubmit(data.boardId)}>
               Done
             </Button>

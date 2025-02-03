@@ -53,6 +53,7 @@ export default function Page() {
   const insertRowData = async (contents: BoardContent[]) => {
     console.log("insertRowData");
 
+    //id 값이 pathname 인 레코드를 찾아 contents 컬럼을 업데이트합니다.
     const { data, error, status } = await supabase
       .from("todos")
       .update({
@@ -194,7 +195,9 @@ export default function Page() {
     }
   };
 
-  const onSave = () => {};
+  const onSave = () => {
+    console.log("onSave");
+  };
 
   // 화면이 마운트 됐을떄
   useEffect(() => {

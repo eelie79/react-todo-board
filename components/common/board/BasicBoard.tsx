@@ -50,7 +50,7 @@ export default function BasicBoard({ data, handleBoards }: Props) {
   const handleDelete = async (id: string | number) => {
     console.log("handleDelete 출력 확인");
 
-    // 해당 Board애 대한 데이터만 수정 혹은 삭제
+    // 해당 Board ID에 대한 데이터만 수정 혹은 삭제
     let { data: todos } = await supabase.from("todos").select("*"); // 모든 데이터 호출
 
     if (todos !== null) {
@@ -59,7 +59,7 @@ export default function BasicBoard({ data, handleBoards }: Props) {
           console.log(item);
 
           let newContents = item.contents.filter((element: BoardContent) => {
-            return element.boardId !== id;
+            return element.boardId !== id; // 아이디가 일치 하지 않으면 선택하지 않음음
           });
 
           // Supabase에 다시 저장
@@ -108,20 +108,29 @@ export default function BasicBoard({ data, handleBoards }: Props) {
 
   // Supabase에 기존에 생성된 보드가 있는지 없는지 확인 -> 데이터 갱신
   const getData = async () => {
-    let { data: todos, error, status } = await supabase.from("todos").select("*"); // 전체 데이터 다 가져오기
-
-    if (todos !== null) {
-      console.log("todo ", todos);
-      todos.forEach((item: Todo) => {
-        if (item.id === Number(pathname.split("/")[2])) {
-          handleBoards(item);
-        }
-      });
-    }
+    let { data: todos, error } = await supabase.from("todos").select("*"); // 전체 데이터 다 가져오기
 
     if (error) {
-      console.log(error);
+      toast({
+        title: "데이터 로드 실패패.",
+        description: "데이터르르 불러오는 중 실패했습니다",
+      });
+      return;
     }
+
+    if (todos === null || todos.length === 0) {
+      toast({
+        title: "조회가능한 데이터가 없습니다.",
+        description: "조회가능한 데이터가 없습니다.",
+      });
+      return;
+    }
+
+    todos.forEach((item: Todo) => {
+      if (item.id === Number(pathname.split("/")[2])) {
+        handleBoards(item);
+      }
+    });
   };
 
   return (
