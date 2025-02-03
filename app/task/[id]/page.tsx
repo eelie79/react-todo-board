@@ -13,11 +13,13 @@ import Image from "next/image";
 
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft } from "lucide-react";
 
 import LabelCalendar from "@/components/common/calendar/LabelCalendar";
 import BasicBoard from "@/components/common/board/BasicBoard";
+import { Input } from "postcss";
 
 interface Todo {
   id: number;
@@ -197,7 +199,7 @@ export default function Page() {
     }
   };
 
-  const onSave = async () => {
+  const handleSave = async () => {
     console.log("onSave");
 
     // 1. Enter Title Here 입력 제목 저장 const {} = await supabase.from().update().eq();
@@ -231,61 +233,97 @@ export default function Page() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <div className="absolute top-6 left-7 flex items-center gap-2">
-        <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
+    <div className={styles.header}>
+      <div className={styles[`header__btn-box`]}>
+        <Button variant={"outline"} size={"icon"} onClick={() => router.push("/")}>
           <ChevronLeft />
         </Button>
-        <Button variant={"outline"} onClick={onSave}>
-          저장
-        </Button>
-      </div>
-      <header className={styles.container__header}>
-        <div className={styles.container__header__content}>
-          <input
-            type="text"
-            placeholder="Enter Title Here"
-            onChange={(event) => {
-              setTitle(event.target.value);
-            }}
-            className={styles.input}
-          />
-          <div className={styles.progressBar}>
-            <span className={styles.progressBar__status}>0/10 completed</span>
-            {/* 프로그래스바 ui */}
-            <Progress value={33} className="w-[30%]" indicatorColor="bg-green-500" />
-          </div>
-          <div className={styles.calendarBox}>
-            <div className={styles.calendarBox__calendar}>
-              <LabelCalendar label="From" />
-              <LabelCalendar label="To" />
-            </div>
-            <Button variant="outline" className="w-[15%] bg-orange-400 text-white border-orange-500 hover:bg-orange-400 hover:text-white" onClick={createBoard}>
-              Add New Board
-            </Button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button variant={"secondary"} onClick={handleSave}>
+            저장
+          </Button>
+          <Button className="text-rose-600 bg-red-50 hover:bg-rose-50" onClick={handleDelete}>
+            삭제
+          </Button>
         </div>
-      </header>
-      <main className={styles.container__body}>
-        {/* // 'BoardContent[]' 형식은 'ReactNode' 형식에 할당할 수 없습니다 */}
-        {boards?.contents.length === 0 ? ( // 보드 배열 데이터가 없으면
-          <div className="flex items-center justify-center w-full h-full">
-            <div className={styles.container__body__infoBox}>
-              <span className={styles.title}>There is no board yet.</span>
-              <span className={styles.subtitle}>Click the button and start flashing!</span>
-              <Button className={styles.button} onClick={createBoard}>
-                <Image src="/assets/images/round-button.svg" alt="flash" width={74} height={74} />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
-            {boards?.contents.map((board: BoardContent) => {
-              return <BasicBoard key={board.boardId} data={board} handleBoards={setBoards} />;
-            })}
-          </div>
-        )}
-      </main>
+      </div>
+      <div className={styles.header__top}>
+        {/* 제목 입력 Input 섹션 */}
+        <input
+          type="text"
+          value={title}
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+          placeholder="Enter Title Here"
+          className="styles.header__top__input"
+        />
+        {/* 진행상황 척도 그래프 섹션 */}
+        <div className="flex items-center justify-start gap-4">
+          <small className="text-sm font-medium leading-none text-[#6d6d6d]">1/10 Completed!</small>
+
+          <progress className="w-60 h-[10px]" value={33} />
+        </div>
+      </div>
+      {/* 캘린더 + ADD New Board 버튼 섹션션 */}
+      <div className={styles.header__bottom}></div>
     </div>
   );
 }
+
+// {/* <div className={styles.container}>
+// <div className="absolute top-6 left-7 flex items-center gap-2">
+//   <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
+//     <ChevronLeft />
+//   </Button>
+//   <Button variant={"outline"} onClick={onSave}>
+//     저장
+//   </Button>
+// </div>
+// <header className={styles.container__header}>
+//   <div className={styles.container__header__content}>
+//     <input
+//       type="text"
+//       placeholder="Enter Title Here"
+//       onChange={(event) => {
+//         setTitle(event.target.value);
+//       }}
+//       className={styles.input}
+//     />
+//     <div className={styles.progressBar}>
+//       <span className={styles.progressBar__status}>0/10 completed</span>
+//       {/* 프로그래스바 ui */}
+//       <Progress value={33} className="w-[30%]" indicatorColor="bg-green-500" />
+//     </div>
+//     <div className={styles.calendarBox}>
+//       <div className={styles.calendarBox__calendar}>
+//         <LabelCalendar label="From" />
+//         <LabelCalendar label="To" />
+//       </div>
+//       <Button variant="outline" className="w-[15%] bg-orange-400 text-white border-orange-500 hover:bg-orange-400 hover:text-white" onClick={createBoard}>
+//         Add New Board
+//       </Button>
+//     </div>
+//   </div>
+// </header>
+// <main className={styles.container__body}>
+//   {/* // 'BoardContent[]' 형식은 'ReactNode' 형식에 할당할 수 없습니다 */}
+//   {boards?.contents.length === 0 ? ( // 보드 배열 데이터가 없으면
+//     <div className="flex items-center justify-center w-full h-full">
+//       <div className={styles.container__body__infoBox}>
+//         <span className={styles.title}>There is no board yet.</span>
+//         <span className={styles.subtitle}>Click the button and start flashing!</span>
+//         <Button className={styles.button} onClick={createBoard}>
+//           <Image src="/assets/images/round-button.svg" alt="flash" width={74} height={74} />
+//         </Button>
+//       </div>
+//     </div>
+//   ) : (
+//     <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
+//       {boards?.contents.map((board: BoardContent) => {
+//         return <BasicBoard key={board.boardId} data={board} handleBoards={setBoards} />;
+//       })}
+//     </div>
+//   )}
+// </main>
+// </div> */}
