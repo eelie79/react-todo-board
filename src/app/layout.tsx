@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import { Roboto } from "next/font/google";
 import "@/styles/globals.css";
+import "@/styles/main.scss";
 // import "@/public/styles/main.scss";
 
 import SideNavigation from "@/components/navigation/SideNavigation";
@@ -33,7 +34,7 @@ const NOTO_SANS_KR = Noto_Sans_KR({
 // });
 
 export const metadata: Metadata = {
-  title: "TODO-BOARD 만들기",
+  title: "TODO-BOARD TASK 만들기",
   description: "Shadcn UI 및 Supabase를 활용한 나만의 TODO-BOARD 만들기",
 };
 
@@ -47,9 +48,13 @@ export default function RootLayout({
       {/* <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body> // className={`antialiased`}*/}
       {/* <body className={`${NOTO_SANS_KR.className} antialiased`}> */}
       <body className={NOTO_SANS_KR.className}>
-        <SideNavigation />
-        {/* app 디렉토리에 있는 page.tsx에 정의된 컴포넌트 렌더링 */}
-        {children}
+        <div className="page">
+          <SideNavigation />
+          <div className="page__main">
+            {/* app 디렉토리에 있는 page.tsx에 정의된 컴포넌트 렌더링 */}
+            {children}
+          </div>
+        </div>
         <Toaster />
       </body>
     </html>

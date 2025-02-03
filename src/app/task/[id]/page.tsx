@@ -228,6 +228,8 @@ export default function Page() {
     }
   };
 
+  const handleDelete = () => {};
+
   // 화면이 마운트 됐을떄
   useEffect(() => {
     getData();
@@ -272,7 +274,9 @@ export default function Page() {
           <LabelDatePicker label={"From"} />
           <LabelDatePicker label={"To"} />
         </div>
-        <Button className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg">ADD NEW BOARD</Button>
+        <Button className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg" onClick={createBoard}>
+          ADD NEW BOARD
+        </Button>
       </div>
     </div>
   );

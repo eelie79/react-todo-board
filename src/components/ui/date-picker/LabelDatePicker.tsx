@@ -5,11 +5,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui";
-import { Calendar } from "@/components/ui";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
-
-import styles from "./LabelCalendar.module.scss";
+import { Calendar, Button, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 
 interface Props {
   label: string;
@@ -17,12 +13,11 @@ interface Props {
 }
 
 export function LabelDatePicker({ label, readonly }: Props) {
-  const [date, setDate] = React.useState<Date>();
-  //   const [date, setDate] = useState<Date>(); --> import { useState } from "react";
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   return (
-    <div className={styles.container}>
-      <span className={styles.container__label}>{label}</span>
+    <div className="max-w-64 items-center gap-3">
+      <span className="text-sm font-medium leading-none text-[#6d6d6d]">{label}</span>
       {/* shadcn ui - Calendar */}
       <Popover>
         <PopoverTrigger asChild>

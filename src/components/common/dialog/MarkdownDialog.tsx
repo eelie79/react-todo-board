@@ -74,7 +74,7 @@ export default function MarkdownDialog({ data, updateBoards }: Props) {
       if (todos !== null) {
         todos.forEach(async (item: Todo) => {
           if (item.id === Number(pathname.split("/")[2])) {
-            // http://localhost:3000/create/78  -> 0 / 1 / 2
+            // http://localhost:3000/task/78  -> 0 / 1 / 2
             item.contents.forEach((element: BoardContent) => {
               // element.boardId === "Done 버튼을 클릭했을떄 해당되는 id값과 같으면"
               // if (element.boardId === "-_qElqCyXqVyxMa1VNwgZ") {

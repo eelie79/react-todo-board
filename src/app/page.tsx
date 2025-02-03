@@ -42,7 +42,7 @@ export default function InitPage() {
       });
 
       if (data) {
-        router.push(`/create/${data[data?.length - 1].id}`); // supabase 동적라우팅 마지막 값을 불러오기
+        router.push(`/task/${data[data?.length - 1].id}`); // supabase 동적라우팅 마지막 값을 불러오기
       } else return;
     }
   };
