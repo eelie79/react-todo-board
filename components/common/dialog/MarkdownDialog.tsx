@@ -150,11 +150,8 @@ export default function MarkdownDialog({ data, updateBoards }: Props) {
           </DialogTitle>
           {/* <DialogDescription>This action cannot be undone. This will permanently delete your account and remove your data from our servers.</DialogDescription> */}
           <div className={styles.dialog__calendarBox}>
-            {/* <LabelCalendar label="From" handleDate={setStartDate} />
-            <LabelCalendar label="To" handleDate={setEndDate} /> */}
-
-            <LabelCalendar label={"From"} onChange={setStartDate} />
-            <LabelCalendar label={"To"} onChange={setEndDate} />
+            <LabelCalendar label="From" handleDate={setStartDate} />
+            <LabelCalendar label="To" handleDate={setEndDate} />
           </div>
           <Separator />
           <div className={styles.dialog__markdown}>

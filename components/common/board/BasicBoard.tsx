@@ -176,7 +176,7 @@ export default function BasicBoard({ data, handleBoards }: Props) {
       <div className={styles.container__footer}>
         {/* Add Contents 컴포넌트 */}
         {/* 이 컴포넌트에서 Add Contents 버튼을 클릭하면 게시글 작성 모달이 표시된다 */}
-        <MarkdownDialog data={data} />
+        <MarkdownDialog data={data} updateBoards={getData} />
       </div>
     </div>
   );

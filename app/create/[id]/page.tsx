@@ -45,6 +45,7 @@ export default function Page() {
   const pathname = usePathname();
   const { toast } = useToast();
 
+  const [title, setTitle] = useState<string>("");
   const [boards, setBoards] = useState<Todo>(); // TODO 전체 boards 데이터 Todo | (() => Todo)
   const [startDate, setStartDate] = useState<string | Date | undefined>(new Date());
   const [endDate, setEndtDate] = useState<string | Date | undefined>(new Date());
@@ -186,17 +187,36 @@ export default function Page() {
         if (item.id === Number(pathname.split("/")[2])) {
           setBoards(item);
           console.log("item: ", item);
+
+          setTitle(item.title); // boards를 가져온 후 title 값을 갱신
         }
       });
     }
+  };
+
+  const onSave = async () => {
+    console.log("onSave");
+
+    // 1. Enter Title Here 입력 제목 저장 const {} = await supabase.from().update().eq();
+    const { data, error, status } = await supabase.from("todos").update({ title: title }).eq("id", pathname.split("/")[2]);
 
     if (error) {
       console.log(error);
+      toast({
+        title: "에러가 발생했습니다.",
+        description: "콘설창에 출력된 에러를 확인하세요!",
+      });
     }
-  };
 
-  const onSave = () => {
-    console.log("onSave");
+    if (status === 204) {
+      toast({
+        title: "수정 완료",
+        description: "작성한 게시물이 Supabase에 올바르게 저장 되었습니다.",
+      });
+
+      // 등록 후 조건 초기화
+      getData();
+    }
   };
 
   // 화면이 마운트 됐을떄
@@ -216,7 +236,14 @@ export default function Page() {
       </div>
       <header className={styles.container__header}>
         <div className={styles.container__header__content}>
-          <input type="text" placeholder="Enter Title Here" className={styles.input} />
+          <input
+            type="text"
+            placeholder="Enter Title Here"
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+            className={styles.input}
+          />
           <div className={styles.progressBar}>
             <span className={styles.progressBar__status}>0/10 completed</span>
             {/* 프로그래스바 ui */}
