@@ -10,12 +10,15 @@ import { toast } from "@/hooks/use-toast";
 
 import { supabase } from "@/utils/supabase";
 import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { sidebarStateAtom } from "@/store";
 
 // css
 import styles from "./SideNavigation.module.scss";
 
 export default function SideNavigation() {
   const router = useRouter();
+  const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [todos, setTodos] = useState<any>([]);
 
   const onCreate = async () => {
@@ -57,18 +60,21 @@ export default function SideNavigation() {
   const getTodos = async () => {
     let { data: todos, error, status } = await supabase.from("todos").select("*");
 
-    if (error) {
-      console.log(error);
-    }
+    // if (error) {
+    //   console.log(error);
+    // }
 
-    if (status === 200) {
-      setTodos(todos); // supabase 에서 등록된 데이터 가져오기
-    }
+    // if (status === 200) {
+    //   setTodos(todos); // supabase 에서 등록된 데이터 가져오기
+    // }
+
+    setTodos(todos);
+    return todos;
   };
 
   useEffect(() => {
     getTodos();
-  }, [todos]);
+  }, [sidebarState]);
 
   return (
     <div className={styles.container}>

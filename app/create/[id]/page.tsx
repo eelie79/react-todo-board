@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { nanoid } from "nanoid";
 import { supabase } from "@/utils/supabase";
+import { useAtom } from "jotai";
+import { sidebarStateAtom } from "@/store";
 
 import styles from "./page.module.scss";
 import Image from "next/image";
@@ -45,6 +47,7 @@ export default function Page() {
   const pathname = usePathname();
   const { toast } = useToast();
 
+  const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
   const [boards, setBoards] = useState<Todo>(); // TODO 전체 boards 데이터 Todo | (() => Todo)
   const [startDate, setStartDate] = useState<string | Date | undefined>(new Date());
@@ -188,7 +191,7 @@ export default function Page() {
           setBoards(item);
           console.log("item: ", item);
 
-          setTitle(item.title); // boards를 가져온 후 title 값을 갱신
+          setTitle(item.title); // boards를 가져온 후 title 값을 새로 갱신
         }
       });
     }
@@ -210,12 +213,15 @@ export default function Page() {
 
     if (status === 204) {
       toast({
-        title: "수정 완료",
+        title: "수정 완료!",
         description: "작성한 게시물이 Supabase에 올바르게 저장 되었습니다.",
       });
 
-      // 등록 후 조건 초기화
+      // 등록 후 재렌더링
       getData();
+
+      /* 상태변경 함수 (예시: onSave 함수호출될때 상태값 변경)  */
+      setSidebarState("updated");
     }
   };
 
