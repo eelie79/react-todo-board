@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 // shadcn ui
 import { Dot, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SearchBar } from "@/components/ui/search-bar";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui";
+import { SearchBar } from "@/components/ui";
+import { Input } from "@/components/ui";
 import { toast } from "@/hooks/use-toast";
 
 import { supabase } from "@/utils/supabase";

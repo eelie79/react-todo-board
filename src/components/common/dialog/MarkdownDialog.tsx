@@ -5,10 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/utils/supabase";
 import MDEditor from "@uiw/react-md-editor";
 
-import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { Separator } from "@/components/ui";
+import { Checkbox } from "@/components/ui";
 // import { useToast } from "@/components/ui/use-toast";
 import { useToast } from "@/hooks/use-toast";
 

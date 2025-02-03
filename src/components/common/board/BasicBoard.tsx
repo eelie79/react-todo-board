@@ -8,10 +8,10 @@ import styles from "./BasicBoard.module.scss";
 
 import { useToast } from "@/hooks/use-toast";
 import { ChevronUp } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui";
+import { Button } from "@/components/ui";
+import { Input } from "@/components/ui";
+import { Card } from "@/components/ui";
 import MDEditor from "@uiw/react-md-editor";
 
 import LabelCalendar from "@/components/common/calendar/LabelCalendar";

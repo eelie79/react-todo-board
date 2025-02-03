@@ -11,13 +11,14 @@ import styles from "./page.module.scss";
 import Image from "next/image";
 // import Image from "./../assets/images/round-button.svg";
 
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui";
+import { Button } from "@/components/ui";
 // import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft } from "lucide-react";
 
-import LabelCalendar from "@/components/common/calendar/LabelCalendar";
+// import LabelCalendar from "@/components/common/calendar/LabelCalendar";
+import { LabelDatePicker } from "@/components/ui";
 import BasicBoard from "@/components/common/board/BasicBoard";
 import { Input } from "postcss";
 
@@ -266,7 +267,13 @@ export default function Page() {
         </div>
       </div>
       {/* 캘린더 + ADD New Board 버튼 섹션션 */}
-      <div className={styles.header__bottom}></div>
+      <div className={styles.header__bottom}>
+        <div className="flex items-center gap-5">
+          <LabelDatePicker label={"From"} />
+          <LabelDatePicker label={"To"} />
+        </div>
+        <Button className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg">ADD NEW BOARD</Button>
+      </div>
     </div>
   );
 }
