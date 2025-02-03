@@ -5,6 +5,7 @@ export { Checkbox } from "./checkbox/checkbox";
 export { Dialog, DialogPortal, DialogOverlay, DialogClose, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "./dialog/dialog";
 export { LabelDatePicker } from "./date-picker/LabelDatePicker";
 export { Input } from "./input/input";
+export { Toaster } from "./toast/toaster";
 export { Popover, PopoverTrigger, PopoverContent } from "./popover/popover";
 export { Progress } from "./progress/progress";
 export { SearchBar } from "./search-bar/search-bar";

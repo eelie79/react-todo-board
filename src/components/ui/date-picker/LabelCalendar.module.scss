@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  &__label {
+    color: #626262;
+    // font-size: 14px;
+    // font-weight: 500;
+    // color: #a6a6a6;
+  }
+}
