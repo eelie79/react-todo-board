@@ -35,7 +35,7 @@ interface BoardContent {
   content: string; // 에디터 안의 입력 텍스트 데이터 컨텐츠
 }
 
-export default function Page() {
+export default function TaskPage() {
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
@@ -188,7 +188,7 @@ export default function Page() {
         {/* 진행상황 척도 그래프 섹션 */}
         <div className="flex items-center justify-start gap-4">
           <small className="text-sm font-medium leading-none text-[#6d6d6d]">1/10 Completed!</small>
-          <Progress className="w-60 h-[10px]" value={33} indicatorColor={"bg-[#006dea]"} />
+          <Progress className="w-60 h-[10px]" value={33} indicatorColor={"bg-[#00d9ff]"} />
         </div>
       </div>
       {/* 캘린더 + ADD New Board 버튼 섹션션 */}
