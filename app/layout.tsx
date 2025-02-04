@@ -4,7 +4,7 @@ import { Roboto } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/main.scss";
 
-import SideNavigation from "@/components/navigation/SideNavigation";
+import SideNavigation from "@/components/common/navigation/SideNavigation";
 
 import { Toaster } from "@/components/ui";
 
