@@ -11,9 +11,7 @@ import styles from "./page.module.scss";
 import Image from "next/image";
 // import Image from "./../assets/images/round-button.svg";
 
-import { Progress } from "@/components/ui";
-import { Button } from "@/components/ui";
-// import { Input } from "@/components/ui/input";
+import { Button, Progress } from "@/components/ui";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft } from "lucide-react";
 

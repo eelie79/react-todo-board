@@ -3,7 +3,6 @@ import { Noto_Sans_KR } from "next/font/google";
 import { Roboto } from "next/font/google";
 import "@/styles/globals.css";
 import "@/styles/main.scss";
-// import "@/public/styles/main.scss";
 
 import SideNavigation from "@/components/navigation/SideNavigation";
 
