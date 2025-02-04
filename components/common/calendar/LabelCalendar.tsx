@@ -6,9 +6,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui";
-import { Calendar } from "@/components/ui";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 
 import styles from "./LabelCalendar.module.scss";
 
@@ -20,7 +18,6 @@ interface Props {
 
 export default function LabelCalendar({ label, readonly, handleDate }: Props) {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  //   const [date, setDate] = useState<Date>(); --> import { useState } from "react";
 
   useEffect(() => {
     handleDate(date);

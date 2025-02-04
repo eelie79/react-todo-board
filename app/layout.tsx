@@ -21,17 +21,6 @@ const NOTO_SANS_KR = Noto_Sans_KR({
   weight: ["400", "500", "700"],
 });
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
-
 export const metadata: Metadata = {
   title: "TODO-BOARD TASK 만들기",
   description: "Shadcn UI 및 Supabase를 활용한 나만의 TODO-BOARD 만들기",
@@ -44,8 +33,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      {/* <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body> // className={`antialiased`}*/}
-      {/* <body className={`${NOTO_SANS_KR.className} antialiased`}> */}
       <body className={NOTO_SANS_KR.className}>
         <div className="page">
           <SideNavigation />

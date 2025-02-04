@@ -11,12 +11,10 @@ import styles from "./page.module.scss";
 import Image from "next/image";
 // import Image from "./../assets/images/round-button.svg";
 
-import { Button, Progress } from "@/components/ui";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft } from "lucide-react";
 
-// import LabelCalendar from "@/components/common/calendar/LabelCalendar";
-import { LabelDatePicker } from "@/components/ui";
 import BasicBoard from "@/components/common/board/BasicBoard";
 import { Input } from "postcss";
 
@@ -36,12 +34,6 @@ interface BoardContent {
   endDate: string | Date;
   content: string; // 에디터 안의 입력 텍스트 데이터 컨텐츠
 }
-
-// 샘플 BoardContent 데이터
-// const boards: BoardContent[] = [
-//   { boardId: 1, isCompleted: false, title: "Board 1", startDate: new Date(), endDate: new Date(), content: "Description 1" },
-//   { boardId: 2, isCompleted: false, title: "Board 2", startDate: new Date(), endDate: new Date(), content: "Description 2" },
-// ];
 
 export default function Page() {
   const router = useRouter();
@@ -84,72 +76,6 @@ export default function Page() {
       });
       getData();
     }
-
-    // if (boards?.contents) {
-    //   // supabase 데이터베이스 연동
-    //   const { data, error, status } = await supabase
-    //     .from("todos")
-    //     .update({
-    //       // 컨텐츠 수정
-    //       contents: contents, // contents: BoardContent[]  보드컨텐츠 배열
-    //     })
-    //     .eq("id", pathname.split("/")[2])
-    //     .select();
-
-    //   if (error) {
-    //     console.log(error);
-    //     toast({
-    //       title: "에러가 발생했습니다.",
-    //       description: "콘솔 창에 출력된 에러를 확인하세요",
-    //     });
-    //   }
-
-    //   // update 완료하면 status코드 204
-    //   if (status === 204) {
-    //     console.log("status 204", status);
-    //     toast({
-    //       title: "추가완료",
-    //       description: "새로운 TO DO Board가 추가 되었습니아 ",
-    //     });
-    //     getData();
-    //   }
-
-    //   if (status === 200) {
-    //     console.log("status 200", status);
-    //     toast({
-    //       title: "추가완료",
-    //       description: "새로운 TO DO Board가 추가 되었습니아 ",
-    //     });
-    //     getData();
-    //   }
-    // } else {
-    //   // supabase 데이터베이스 연동
-    //   const { data, error, status } = await supabase
-    //     .from("todos")
-    //     .insert({
-    //       // 컨텐츠 수정
-    //       contents: contents, // contents: BoardContent[]  보드컨텐츠 배열
-    //     })
-    //     .eq("id", pathname.split("/")[2])
-    //     .select();
-
-    //   if (error) {
-    //     console.log(error);
-    //     toast({
-    //       title: "에러가 발생했습니다.",
-    //       description: "콘솔 창에 출력된 에러를 확인하세요",
-    //     });
-    //   }
-
-    //   if (status === 201) {
-    //     console.log("status 201", status);
-    //     toast({
-    //       title: "생성 완료",
-    //       description: "새로운 TO DO Board가 생성 되었습니아 ",
-    //     });
-    //     getData();
-    //   }
-    // }
   };
 
   // ADD NEW BOARD 버튼을 클릭하였을떄
@@ -262,8 +188,7 @@ export default function Page() {
         {/* 진행상황 척도 그래프 섹션 */}
         <div className="flex items-center justify-start gap-4">
           <small className="text-sm font-medium leading-none text-[#6d6d6d]">1/10 Completed!</small>
-
-          <progress className="w-60 h-[10px]" value={33} />
+          <Progress className="w-60 h-[10px]" value={33} indicatorColor={"bg-[#006dea]"} />
         </div>
       </div>
       {/* 캘린더 + ADD New Board 버튼 섹션션 */}
@@ -272,67 +197,13 @@ export default function Page() {
           <LabelDatePicker label={"From"} />
           <LabelDatePicker label={"To"} />
         </div>
-        <Button className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg" onClick={createBoard}>
+        <Button
+          className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] 
+        hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg"
+          onClick={createBoard}>
           ADD NEW BOARD
         </Button>
       </div>
     </div>
   );
 }
-
-// {/* <div className={styles.container}>
-// <div className="absolute top-6 left-7 flex items-center gap-2">
-//   <Button variant={"outline"} size={"icon"} onClick={() => router.back()}>
-//     <ChevronLeft />
-//   </Button>
-//   <Button variant={"outline"} onClick={onSave}>
-//     저장
-//   </Button>
-// </div>
-// <header className={styles.container__header}>
-//   <div className={styles.container__header__content}>
-//     <input
-//       type="text"
-//       placeholder="Enter Title Here"
-//       onChange={(event) => {
-//         setTitle(event.target.value);
-//       }}
-//       className={styles.input}
-//     />
-//     <div className={styles.progressBar}>
-//       <span className={styles.progressBar__status}>0/10 completed</span>
-//       {/* 프로그래스바 ui */}
-//       <Progress value={33} className="w-[30%]" indicatorColor="bg-green-500" />
-//     </div>
-//     <div className={styles.calendarBox}>
-//       <div className={styles.calendarBox__calendar}>
-//         <LabelCalendar label="From" />
-//         <LabelCalendar label="To" />
-//       </div>
-//       <Button variant="outline" className="w-[15%] bg-orange-400 text-white border-orange-500 hover:bg-orange-400 hover:text-white" onClick={createBoard}>
-//         Add New Board
-//       </Button>
-//     </div>
-//   </div>
-// </header>
-// <main className={styles.container__body}>
-//   {/* // 'BoardContent[]' 형식은 'ReactNode' 형식에 할당할 수 없습니다 */}
-//   {boards?.contents.length === 0 ? ( // 보드 배열 데이터가 없으면
-//     <div className="flex items-center justify-center w-full h-full">
-//       <div className={styles.container__body__infoBox}>
-//         <span className={styles.title}>There is no board yet.</span>
-//         <span className={styles.subtitle}>Click the button and start flashing!</span>
-//         <Button className={styles.button} onClick={createBoard}>
-//           <Image src="/assets/images/round-button.svg" alt="flash" width={74} height={74} />
-//         </Button>
-//       </div>
-//     </div>
-//   ) : (
-//     <div className="flex flex-col items-center justify-start w-full h-full gap-4 overflow-y-scroll">
-//       {boards?.contents.map((board: BoardContent) => {
-//         return <BasicBoard key={board.boardId} data={board} handleBoards={setBoards} />;
-//       })}
-//     </div>
-//   )}
-// </main>
-// </div> */}
