@@ -2,7 +2,7 @@
 // components 디렉토리는 재사용 가능한 UI 컴포넌트들을 모아두는 곳으로, 이러한 컴포넌트들은 다른 곳에서 import하여 사용할 수 있다.
 
 import { useState } from "react";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import { usePathname } from "next/navigation";
 import styles from "./BasicBoard.module.scss";
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/utils/supabase/client";
 import MDEditor from "@uiw/react-md-editor";
 
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui";

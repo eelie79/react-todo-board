@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { supabase } from "@/utils/supabase/client";
 import { nanoid } from "nanoid";
-import { supabase } from "@/utils/supabase";
 import { useAtom } from "jotai";
 import { sidebarStateAtom } from "@/store";
 
@@ -15,8 +15,7 @@ import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft } from "lucide-react";
 
-import BasicBoard from "@/components/common/board/BasicBoard";
-import { Input } from "postcss";
+import "./page.module.scss";
 
 interface Todo {
   id: number;
