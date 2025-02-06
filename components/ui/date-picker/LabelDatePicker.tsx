@@ -10,6 +10,8 @@ import { Calendar, Button, Popover, PopoverContent, PopoverTrigger } from "@/com
 interface Props {
   label: string;
   readonly?: boolean;
+  value: Date | undefined;
+  onChange?: (date: Date | undefined) => void;
 }
 
 export function LabelDatePicker({ label, readonly }: Props) {
@@ -17,12 +19,13 @@ export function LabelDatePicker({ label, readonly }: Props) {
 
   return (
     <div className="max-w-64 items-center gap-3">
-      <span className="text-sm font-medium leading-none text-[#6d6d6d]">{label}</span>
+      <span className="text-sm font-medium leading-none text-[#6d6d6d] pr-2">{label}</span>
       {/* shadcn ui - Calendar */}
       <Popover>
         <PopoverTrigger asChild>
           <Button variant={"outline"} className={cn("w-[200px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
             <CalendarIcon className="mr-2 h-4 w-4" />
+            {/* {value ? format(value, "PPP") : <span>날짜를 선택하세요</span>} */}
             {date ? format(date, "PPP") : <span>날짜를 선택하세요</span>}
           </Button>
         </PopoverTrigger>

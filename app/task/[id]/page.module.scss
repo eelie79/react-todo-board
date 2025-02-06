@@ -45,6 +45,40 @@
   }
 }
 
+.body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: calc(100% - 230px);
+
+  padding: 24px;
+
+  &__isData {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 16px;
+
+    overflow-y: scroll;
+  }
+  &__noData {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 // .container {
 //   display: flex;
 //   flex-direction: column;
