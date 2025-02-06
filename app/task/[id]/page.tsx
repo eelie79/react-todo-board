@@ -11,11 +11,10 @@ import { useCreateBoard } from "@/hooks/apis";
 import styles from "./page.module.scss";
 import Image from "next/image";
 
-import { Button, Progress, LabelDatePicker } from "@/components/ui";
-import { BoardCard } from "@/components/common";
 import { ChevronLeft } from "lucide-react";
 import { Task, Board } from "@/types";
-import { Content } from "next/font/google";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
+import { BoardCard } from "@/components/common";
 
 export default function TaskPage() {
   const router = useRouter();
@@ -25,10 +24,11 @@ export default function TaskPage() {
   // const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
   const [boards, setBoards] = useState<Board[]>([]); // TODO 전체 boards 데이터 Todo | (() => Todo) 부라우져가 초기화 되면 데이터 날아감
-  const [startDate, setStartDate] = useState<string | Date | undefined>(new Date());
-  const [endDate, setEndtDate] = useState<string | Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [endDate, setEndtDate] = useState<Date | undefined>(undefined);
 
   // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
+
   /* Task 내의 Board 생성 */
   // ADD NEW BOARD 버튼을 클릭하였을떄
   const handleAddBoard = () => {
@@ -133,9 +133,11 @@ export default function TaskPage() {
           <div className={styles.body__noData}>
             {/* Add New Board 버튼 클릭으로 인한 Board content 데이터가 없는 경우 */}
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">There is no board yet.</h3>
-            <small className="text-sm font-medium leading-none text-[#6d6d6d] mt-3 mb-7">click the button and start flashing!</small>
-            <Button onClick={handleAddBoard}>
-              <Image src={"@/images/round-button.svg"} width={74} height={74} alt="rounded-button" />
+            <small className="text-sm font-medium leading-none text-[#6d6d6d] mt-3 mb-10">click the button and start flashing!</small>
+            <Button variant={"ghost"} onClick={handleAddBoard}>
+              {/* <Image src={"/public/assets/images/round-button.svg"} width={74} height={74} alt="rounded-button" /> */}
+              {/* <Image src="/assets/images/button.svg" width={74} height={74} alt="rounded-button" /> */}
+              <Image src={"/assets/images/round-button.svg"} width={74} height={74} alt="rounded-button" />
             </Button>
           </div>
         )}

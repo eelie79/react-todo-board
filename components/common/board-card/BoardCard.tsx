@@ -1,14 +1,14 @@
 // "use client";
 
-import { Task, Board } from "@/types";
 import { ChevronUp, Ghost } from "lucide-react";
 import { Button, Checkbox, Card, LabelDatePicker, Separator } from "@/components/ui";
+import { Task, Board } from "@/types";
 
 import { MarkdownDialog } from "@/components/common";
 
 interface Props {
   board: Board;
-  handleBoards: (data: Task) => void;
+  // handleBoards: (data: Task) => void;
 }
 
 export function BoardCard({ board }: Props) {
@@ -93,7 +93,7 @@ export function BoardCard({ board }: Props) {
       {/* 게시물 카드 제목 영역 */}
       <div className="w-full flex flex-col items-center justify-between mb-4">
         <div className="w-full flex items-center justify-start gap-2">
-          <Checkbox className="h-5 w-5" checked={true}></Checkbox>
+          <Checkbox className="h-5 w-5" checked={true} />
           <input type="text" placeholder="등록된 제목이 없습니다" value={board.title} className="w-full text-xl outline-none bg-transparent" disabled={true} />
           {/* 조회용 인풋 */}
         </div>

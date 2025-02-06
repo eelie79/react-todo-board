@@ -97,7 +97,7 @@ export function MarkdownDialog({ board, children }: Props) {
       <DialogContent className="max-w-fit">
         <DialogHeader>
           <DialogTitle>
-            <div className={styles.dialog__titleBox}>
+            {/* <div className={styles.dialog__titleBox}>
               <Checkbox className="w-5 h-5" />
               <input
                 type="text"
@@ -108,7 +108,7 @@ export function MarkdownDialog({ board, children }: Props) {
                   setTitle(event.target.value);
                 }}
               />
-            </div>
+            </div> */}
             <div className="flex items-center justify-start gap-2">
               <Checkbox className="w-5 min-w-5 h-5" checked={true} />
               <input
@@ -136,7 +136,7 @@ export function MarkdownDialog({ board, children }: Props) {
         {/* 마크다운 에디터 UI영역 */}
         {/* <MDEditor height={100 + "%"} value={data.content ? data.content : content} onChange={setContent} /> */}
         {/* <MDEditor height={320 + "px"} onChange={setContent} value={content} /> */}
-        <MDEditor height={320 + "px"} />
+        <MDEditor height={320 + "px"} onChange={setContent} value={content} />
 
         <DialogFooter>
           <DialogClose asChild>
