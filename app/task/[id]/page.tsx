@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { nanoid } from "nanoid";
 // import { useAtom } from "jotai";
 // import { sidebarStateAtom } from "@/store";
 
-import { useCreateBoard } from "@/hooks/apis";
+import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
 
 import styles from "./page.module.scss";
 import Image from "next/image";
@@ -19,13 +19,23 @@ import { BoardCard } from "@/components/common";
 export default function TaskPage() {
   const router = useRouter();
   const { id } = useParams();
+  const { task } = useGetTaskById(Number(id));
   const createBoard = useCreateBoard();
 
   // const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
   const [boards, setBoards] = useState<Board[]>([]); // TODO 전체 boards 데이터 Todo | (() => Todo) 부라우져가 초기화 되면 데이터 날아감
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndtDate] = useState<Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title || "");
+      setStartDate(task.start_date ? new Date(task.start_date) : undefined);
+      setEndDate(task.end_date ? new Date(task.end_date) : undefined);
+      setBoards(task.contents);
+    }
+  }, [task]);
 
   // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
 
