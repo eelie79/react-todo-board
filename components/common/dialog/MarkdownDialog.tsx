@@ -18,7 +18,7 @@ interface Props {
   children: React.ReactNode;
   // data: Board;
   board: Board;
-  updateBoards: () => void;
+  // updateBoards: () => void;
 }
 
 export function MarkdownDialog({ board, children }: Props) {
@@ -127,7 +127,14 @@ export function MarkdownDialog({ board, children }: Props) {
         {/* 마크다운 에디터 UI영역 */}
         {/* <MDEditor height={100 + "%"} value={data.content ? data.content : content} onChange={setContent} /> */}
         {/* <MDEditor height={320 + "px"} onChange={setContent} value={content} /> */}
-        <MDEditor height={320 + "px"} onChange={setContent} value={content} />
+        <MDEditor
+          height={320 + "px"}
+          value={content}
+          onChange={() => {
+            setContent;
+          }}
+        />
+        {/* onChange?: (value?: string, event?: React.ChangeEvent<HTMLTextAreaElement>, state?: ContextStore) => void; */}
 
         <DialogFooter>
           <DialogClose asChild>
