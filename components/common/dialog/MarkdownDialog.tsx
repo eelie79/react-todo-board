@@ -1,35 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { useCreateBoard } from "@/hooks/apis";
 import MDEditor from "@uiw/react-md-editor";
 
 import { Button, Checkbox, Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose, DialogDescription, LabelDatePicker, Separator } from "@/components/ui";
-import { useToast } from "@/hooks/use-toast";
 
-import styles from "./MarkdownDialog.module.scss";
 import { Task, Board } from "@/types";
-import { useCreateBoard } from "@/hooks/apis";
 
 interface Props {
   children: React.ReactNode;
   // data: Board;
   board: Board;
-  // updateBoards: () => void;
+  updateBoards: () => void;
 }
 
 export function MarkdownDialog({ board, children }: Props) {
-  const id = useParams();
-  const updateBoard = useCreateBoard();
+  const { id } = useParams();
+  const updateBoards = useCreateBoard();
+
   const { toast } = useToast();
 
-  /** 상태 값 선언 수정전 */
-  // const [title, setTitle] = useState<string>("");
-  // const [content, setContent] = useState<string | undefined>("**Hello, World!!**");
-  // const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  // const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-
-  /* 해당 컴포넌트에서 사용되는 상태값값 */
+  /* 해당 컴포넌트에서 사용되는 상태 값 */
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -39,15 +33,16 @@ export function MarkdownDialog({ board, children }: Props) {
 
   /* 상태값 초기화 */
   const initState = () => {
-    setIsCompleted(false);
-    setTitle("");
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setContent("**Hello, World!!**");
+    setIsCompleted(board.isCompleted || false);
+    setTitle(board.title || "");
+    setStartDate(board.startDate ? new Date(board.startDate) : undefined);
+    setEndDate(board.endDate ? new Date(board.endDate) : undefined);
+    setContent(board.content || "**Hello, World!!**");
   };
 
+  // 다이얼로그 닫힐때 초기화
   const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+    setIsDialogOpen(false); // 창닫기
     initState();
   };
 
@@ -59,56 +54,47 @@ export function MarkdownDialog({ board, children }: Props) {
       toast({
         variant: "destructive",
         title: "기입되지 않은 데이터(값)가 있습니다.",
-        description: "제목 날짜 혹은 콘텐츠 값은 필수 값입니다!",
+        description: "제목, 콘텐츠 값은 필수 값입니다!, 모두 작성해 주세요",
       });
       return;
     }
+
     // 해당 Board에 대한 데이터만 수정
     try {
       /* contents 배열에서 선택한 board를 찾고, 수정된 값으로 업데이트 */
-      const newBoards = task.boards.map((board: Board) => {
+      const newBoards = task?.boards.map((board: Board) => {
         if (board.id === boardId) {
           return { ...board, isCompleted, title, startDate, endDate, content };
         }
         return board;
       });
-      await updateBoard(Number(id), "contents", newBoards); // 뉴데이터로 치환
+      await updateBoards(Number(id), "contents", newBoards); // 뉴데이터로 치환
       handleCloseDialog();
     } catch (error) {
       /* 네트워크 오류나 애기치 않은 에러를 잡기 위해 catch 구문 사용 */
+      toast({
+        variant: "destructive",
+        title: "네트워크 오류",
+        description: "서버와 연결할 수 없습니다. 다시 시도해 주세요!",
+      });
       throw error;
     }
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
-      {/* <DialogTrigger asChild>
-        <Button variant={"ghost"} className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">
-          Add Contents
-        </Button>
-      </DialogTrigger> */}
-      {board.title ? (
+    //  modal={false}
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      {/* {board.title ? (
         <DialogTrigger asChild>{children}</DialogTrigger>
       ) : (
         <DialogTrigger asChild>
           <span className="font-normal text-gray-400 hover:text-gray-500 cursor-pointer">Add Contents</span>
         </DialogTrigger>
-      )}
-      <DialogContent className="max-w-fit">
-        <DialogHeader>
+      )} */}
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader className="flex flex-col">
           <DialogTitle>
-            {/* <div className={styles.dialog__titleBox}>
-              <Checkbox className="w-5 h-5" />
-              <input
-                type="text"
-                placeholder="write a title for your board."
-                // value={data.title ? data.title : title}
-                className={styles.dialog__titleBox__title}
-                onChange={(event) => {
-                  setTitle(event.target.value);
-                }}
-              />
-            </div> */}
             <div className="flex items-center justify-start gap-2">
               <Checkbox className="w-5 min-w-5 h-5" checked={true} />
               <input
@@ -127,8 +113,8 @@ export function MarkdownDialog({ board, children }: Props) {
 
         {/* 캘린더 박스 */}
         <div className="flex items-center gap-5">
-          <LabelDatePicker label="From" value={setStartDate} />
-          <LabelDatePicker label="To" value={setEndDate} />
+          <LabelDatePicker label="From" value={startDate} onChange={setStartDate} />
+          <LabelDatePicker label="To" value={endDate} onChange={setEndDate} />
         </div>
 
         <Separator />
@@ -140,7 +126,9 @@ export function MarkdownDialog({ board, children }: Props) {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant={"outline"}>취소</Button>
+            <Button variant={"outline"} onClick={handleCloseDialog}>
+              취소
+            </Button>
           </DialogClose>
           <Button
             type="submit"
