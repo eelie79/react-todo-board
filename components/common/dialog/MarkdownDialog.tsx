@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useCreateBoard } from "@/hooks/apis";
+
+import { useAtomValue } from "jotai";
+import { taskAtom } from "@/store/atoms";
+
 import MDEditor from "@uiw/react-md-editor";
+import { useCreateBoard } from "@/hooks/apis";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button, Checkbox, Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose, DialogDescription, LabelDatePicker, Separator } from "@/components/ui";
 
@@ -20,6 +24,7 @@ interface Props {
 export function MarkdownDialog({ board, children }: Props) {
   const { id } = useParams();
   const updateBoards = useCreateBoard();
+  const task = useAtomValue(taskAtom); // 조회용
 
   const { toast } = useToast();
 
@@ -33,11 +38,11 @@ export function MarkdownDialog({ board, children }: Props) {
 
   /* 상태값 초기화 */
   const initState = () => {
-    setIsCompleted(board.isCompleted || false);
-    setTitle(board.title || "");
-    setStartDate(board.startDate ? new Date(board.startDate) : undefined);
-    setEndDate(board.endDate ? new Date(board.endDate) : undefined);
-    setContent(board.content || "**Hello, World!!**");
+    setIsCompleted(false);
+    setTitle("");
+    setStartDate(undefined);
+    setEndDate(undefined);
+    setContent("**Hello, World!!**");
   };
 
   // 다이얼로그 닫힐때 초기화
@@ -62,7 +67,7 @@ export function MarkdownDialog({ board, children }: Props) {
     // 해당 Board에 대한 데이터만 수정
     try {
       /* contents 배열에서 선택한 board를 찾고, 수정된 값으로 업데이트 */
-      const newBoards = task?.boards.map((board: Board) => {
+      const newBoards = task?.contents.map((board: Board) => {
         if (board.id === boardId) {
           return { ...board, isCompleted, title, startDate, endDate, content };
         }

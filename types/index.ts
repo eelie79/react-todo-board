@@ -1,5 +1,5 @@
 export interface Task {
-  boards(boards: any): unknown;
+  // boards: Board[];
   // supabase row 데이터 타입
   id: number;
   title: string;
