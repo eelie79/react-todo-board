@@ -101,11 +101,19 @@ export function MarkdownDialog({ board, children }: Props) {
         <DialogHeader className="flex flex-col">
           <DialogTitle>
             <div className="flex items-center justify-start gap-2">
-              <Checkbox className="w-5 min-w-5 h-5" checked={true} />
+              <Checkbox
+                className="w-5 min-w-5 h-5"
+                checked={isCompleted}
+                onCheckedChange={(checked) => {
+                  if (typeof checked === "boolean") {
+                    setIsCompleted(checked);
+                  }
+                }}
+              />
               <input
                 type="text"
                 placeholder="게시물의 제목을 입력해 주세요"
-                // value={data.title ? data.title : title}
+                value={title}
                 className="w-full text-xl outline-none bg-transparent"
                 onChange={(event) => {
                   setTitle(event.target.value);
