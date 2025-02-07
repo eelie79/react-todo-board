@@ -30,9 +30,11 @@ export function MarkdownDialog({ board, children }: Props) {
   /* 해당 컴포넌트에서 사용되는 상태 값 */
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
+
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-  const [content, setContent] = useState<string | undefined>("**Hello, World!!**");
+
+  const [content, setContent] = useState<string | undefined | "">("**Hello, World!!**");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   /* 상태값 초기화 & board 데이터 있으면 board 데이터 연결 */
@@ -75,7 +77,7 @@ export function MarkdownDialog({ board, children }: Props) {
       const newBoards = task?.contents.map((board: Board) => {
         if (board.id === boardId) {
           // 클릭했을때 넘겨주는 id 하고 같으면
-          return { ...board, isCompleted, title, startDate, endDate, content }; // 변경된 값만 변경
+          return { ...board, isCompleted, title, start_date: startDate, end_date: endDate, content }; // 변경된 값만 변경
         }
         return board;
       });
@@ -134,8 +136,8 @@ export function MarkdownDialog({ board, children }: Props) {
         <div className="flex items-center gap-5">
           {/* <LabelDatePicker label="From" value={startDate} handleDate={setStartDate} />
         <LabelDatePicker label="To" value={endDate} onChange={setEndDate} /> */}
-          <LabelDatePicker label="From" value={startDate} onChange={setStartDate} />
-          <LabelDatePicker label="To" value={endDate} onChange={setEndDate} />
+          <LabelDatePicker label={"From"} value={startDate} onChange={setStartDate} /> /
+          <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
         </div>
 
         <Separator />

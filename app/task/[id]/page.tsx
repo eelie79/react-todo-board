@@ -5,6 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import { nanoid } from "nanoid";
 // import { useAtom } from "jotai";
 // import { sidebarStateAtom } from "@/store";
+import { toast, useToast } from "@/hooks/use-toast";
+import { supabase } from "@/utils/supabase/client";
 
 import { Task, Board } from "@/types";
 import { Button, Progress, LabelDatePicker } from "@/components/ui";
@@ -59,26 +61,50 @@ export default function TaskPage() {
   };
 
   const handleSave = async () => {
-    // console.log("onSave");
-    // // 1. Enter Title Here 입력 제목 저장 const {} = await supabase.from().update().eq();
-    // const { data, error, status } = await supabase.from("todos").update({ title: title }).eq("id", pathname.split("/")[2]);
-    // if (error) {
-    //   console.log(error);
-    //   toast({
-    //     title: "에러가 발생했습니다.",
-    //     description: "콘설창에 출력된 에러를 확인하세요!",
-    //   });
-    // }
-    // if (status === 204) {
-    //   toast({
-    //     title: "수정 완료!",
-    //     description: "작성한 게시물이 Supabase에 올바르게 저장 되었습니다.",
-    //   });
-    //   // 등록 후 재렌더링
-    //   getData();
-    //   /* 상태변경 함수 (예시: onSave 함수호출될때 상태값 변경)  */
-    //   setSidebarState("updated");
-    // }
+    // 24강 handleSave
+    if (!title || !startDate || !endDate) {
+      toast({
+        variant: "destructive",
+        title: "기입되지 않은 데이터(값)가 있습니다.",
+        description: "제목, 시작일, 종료일은 필수값 입니다.",
+      });
+    }
+
+    try {
+      const { data, error, status } = await supabase
+        .from("todos")
+        .update({
+          title: title,
+          start_date: startDate,
+          end_date: endDate,
+        })
+        .eq("id", id)
+        .select();
+
+      if (data && status === 200) {
+        /* tasks 테이블에 ROW 데이터 한 줄이 올바르게 생성되면 실행 */
+        toast({
+          title: "TASK 저장을 완료하였습니다.",
+          description: "수정한 TASK의 일정 Date를 꼭 지켜주세요!",
+        });
+      }
+
+      if (error) {
+        console.log(error);
+        toast({
+          variant: "destructive",
+          title: "에러가 발생했습니다.",
+          description: `Supabase 오류: ${error.message} || "알 수 없는 오류"`,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "네트워크 오류",
+        description: "서버와 연결할 수 없습니다. 다시 시도해주세요!",
+      });
+    }
   };
 
   const handleDelete = () => {};
@@ -91,6 +117,7 @@ export default function TaskPage() {
             <ChevronLeft />
           </Button>
           <div className="flex items-center gap-2">
+            {/* 타이틀 날짜 저장 */}
             <Button variant={"secondary"} onClick={handleSave}>
               저장
             </Button>
@@ -123,8 +150,8 @@ export default function TaskPage() {
         <div className={styles.header__bottom}>
           <div className="flex items-center gap-5">
             {/* 날짜 조회용으로 onChangeg함수 필요없음 value 데이터만 들어감 onChange? */}
-            <LabelDatePicker label={"From"} value={startDate} /> /
-            <LabelDatePicker label={"To"} value={endDate} />
+            <LabelDatePicker label={"From"} value={startDate} onChange={setStartDate} /> /
+            <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
           </div>
           <Button
             className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] 
