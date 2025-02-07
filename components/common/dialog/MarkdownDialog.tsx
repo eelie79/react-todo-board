@@ -36,13 +36,17 @@ export function MarkdownDialog({ board, children }: Props) {
   const [content, setContent] = useState<string>("**Hello, World!!**");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    initState();
+  }, [board]);
+
   /* 상태값 초기화 */
   const initState = () => {
-    setIsCompleted(false);
-    setTitle("");
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setContent("**Hello, World!!**");
+    setIsCompleted(board.isCompleted || false);
+    setTitle(board.title || "");
+    setStartDate(board.startDate ? new Date(board.startDate) : undefined);
+    setEndDate(board.endDate ? new Date(board.endDate) : undefined);
+    setContent(board.content || "**Hello, World!!**");
   };
 
   // 다이얼로그 닫힐때 초기화
@@ -51,7 +55,7 @@ export function MarkdownDialog({ board, children }: Props) {
     initState();
   };
 
-  // supabase 저장 -> onSubmit 호출시 board ID값 전달 - contents[] 중 특정 보드한개 등록록
+  // supabase 저장 -> onSubmit 호출시 board ID값 전달 - contents[] 중 특정 보드한개 등록
   const handleSubmit = async (boardId: string) => {
     console.log("onSubmit 함수 호출");
     // !title || !startDate || !endDate || !content
@@ -135,13 +139,7 @@ export function MarkdownDialog({ board, children }: Props) {
         {/* 마크다운 에디터 UI영역 */}
         {/* <MDEditor height={100 + "%"} value={data.content ? data.content : content} onChange={setContent} /> */}
         {/* <MDEditor height={320 + "px"} onChange={setContent} value={content} /> */}
-        <MDEditor
-          height={320 + "px"}
-          value={content}
-          onChange={() => {
-            setContent;
-          }}
-        />
+        <MDEditor height={320 + "px"} value={content} onChange={setContent} />
         {/* onChange?: (value?: string, event?: React.ChangeEvent<HTMLTextAreaElement>, state?: ContextStore) => void; */}
 
         <DialogFooter>

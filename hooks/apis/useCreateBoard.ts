@@ -44,3 +44,53 @@ function useCreateBoard() {
 }
 
 export { useCreateBoard };
+
+// 기존 코드
+// 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
+// const insertRowData = async (contents: Board[]) => {
+//   // Supabase 데이터베이스에 연동
+//   const { data, error, status } = await supabase
+//   .from("todos")
+//   .update({contents: contents})
+//   .eq("id", pathname.split("/")[2]);
+
+//   if (status === 204) {
+//     // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+//     toast({
+//       title: "추가 완료!",
+//       description: "새로운운 TODO-BOARD가 추가 되었습니다다",
+//     });
+//     router.push(`/task/${data[0].id}`);
+//   }
+
+//   if (error) {
+//     console.log(error);
+//     toast({
+//       title: "에러가 발생했습니다.",
+//       description: "콘솔창에 출력된 에러를 확인하세요",
+//     });
+//   }
+// };
+
+// const handleSave = async () => {
+// console.log("onSave");
+// // 1. Enter Title Here 입력 제목 저장 const {} = await supabase.from().update().eq();
+// const { data, error, status } = await supabase.from("todos").update({ title: title }).eq("id", pathname.split("/")[2]);
+// if (error) {
+//   console.log(error);
+//   toast({
+//     title: "에러가 발생했습니다.",
+//     description: "콘설창에 출력된 에러를 확인하세요!",
+//   });
+// }
+// if (status === 204) {
+//   toast({
+//     title: "수정 완료!",
+//     description: "작성한 게시물이 Supabase에 올바르게 저장 되었습니다.",
+//   });
+//   // 등록 후 재렌더링
+//   getData();
+//   /* 상태변경 함수 (예시: onSave 함수호출될때 상태값 변경)  */
+//   setSidebarState("updated");
+// }
+// };

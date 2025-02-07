@@ -6,25 +6,25 @@ import { nanoid } from "nanoid";
 // import { useAtom } from "jotai";
 // import { sidebarStateAtom } from "@/store";
 
+import { Task, Board } from "@/types";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
+import { BoardCard } from "@/components/common";
+import { ChevronLeft } from "lucide-react";
 
 import styles from "./page.module.scss";
 import Image from "next/image";
-
-import { ChevronLeft } from "lucide-react";
-import { Task, Board } from "@/types";
-import { Button, Progress, LabelDatePicker } from "@/components/ui";
-import { BoardCard } from "@/components/common";
 
 export default function TaskPage() {
   const router = useRouter();
   const { id } = useParams();
   const { task } = useGetTaskById(Number(id));
-  const createBoard = useCreateBoard();
+  const createBoard = useCreateBoard(); // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
 
   // const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
-  const [boards, setBoards] = useState<Board[]>([]); // TODO 전체 boards 데이터 Todo | (() => Todo) 부라우져가 초기화 되면 데이터 날아감
+  // TODO 전체 boards 데이터 Todo | (() => Todo) 부라우져가 초기화 되면 데이터 날아감
+  const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
@@ -37,8 +37,6 @@ export default function TaskPage() {
     }
   }, [task]);
 
-  // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
-
   /* Task 내의 Board 생성 */
   // ADD NEW BOARD 버튼을 클릭하였을떄
   const handleAddBoard = () => {
@@ -47,7 +45,7 @@ export default function TaskPage() {
     // 보드 컨텐츠 입력 객체 리터럴 초기값
     const newBoard: Board = {
       id: nanoid(),
-      isCompleted: false,
+      isCompleted: true,
       title: "",
       startDate: undefined,
       endDate: undefined,
@@ -56,7 +54,7 @@ export default function TaskPage() {
 
     const newBoards = [...boards, newBoard];
     setBoards(newBoards);
-    // createBoard(taskId, "컬럼명 boards", newBoards);
+    // createBoard(taskId, "컬럼명 boards", newBoards); // 기존 insertRowData
     createBoard(Number(id), "contents", newBoards); // 실제 Supabase와 통신하는 로직 hook
   };
 
@@ -96,7 +94,10 @@ export default function TaskPage() {
             <Button variant={"secondary"} onClick={handleSave}>
               저장
             </Button>
-            <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">삭제 {/*    onClick={handleDelete} */}</Button>
+            <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">
+              삭제
+              {/* onClick={handleDelete} */}
+            </Button>
           </div>
         </div>
         <div className={styles.header__top}>
