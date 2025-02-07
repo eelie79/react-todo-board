@@ -33,7 +33,7 @@ export function MarkdownDialog({ board, children }: Props) {
   const [title, setTitle] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-  const [content, setContent] = useState<string>("**Hello, World!!**");
+  const [content, setContent] = useState<string | undefined>("**Hello, World!!**");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -140,7 +140,6 @@ export function MarkdownDialog({ board, children }: Props) {
         {/* <MDEditor height={100 + "%"} value={data.content ? data.content : content} onChange={setContent} /> */}
         {/* <MDEditor height={320 + "px"} onChange={setContent} value={content} /> */}
         <MDEditor height={320 + "px"} value={content} onChange={setContent} />
-        {/* onChange?: (value?: string, event?: React.ChangeEvent<HTMLTextAreaElement>, state?: ContextStore) => void; */}
 
         <DialogFooter>
           <DialogClose asChild>

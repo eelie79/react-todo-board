@@ -15,7 +15,7 @@ interface Props {
   // handleBoards: (data: Task) => void;
 }
 
-export function BoardCard({ board, handleBoards }: Props) {
+export function BoardCard({ board }: Props) {
   const pathname = usePathname();
   const { toast } = useToast();
 
