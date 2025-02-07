@@ -10,7 +10,7 @@ import { supabase } from "@/utils/supabase/client";
 
 import { Task, Board } from "@/types";
 import { Button, Progress, LabelDatePicker } from "@/components/ui";
-import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
+import { useCreateBoard, useGetTaskById, useGetTasks } from "@/hooks/apis";
 import { BoardCard, DeleteTaskPopup } from "@/components/common";
 import { ChevronLeft } from "lucide-react";
 
@@ -22,6 +22,7 @@ export default function TaskPage() {
   const { id } = useParams();
   const { task, getTaskById } = useGetTaskById(Number(id)); // 특정 id 단일 TASK 데이터 조회
   const createBoard = useCreateBoard(); // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
+  const { getTasks } = useGetTasks();
 
   // const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
@@ -61,13 +62,14 @@ export default function TaskPage() {
   };
 
   const handleSave = async () => {
-    // 24강 handleSave
+    // 24강 handleSave 타이틀 날짜 저장
     if (!title || !startDate || !endDate) {
       toast({
         variant: "destructive",
         title: "기입되지 않은 데이터(값)가 있습니다.",
         description: "제목, 시작일, 종료일은 필수값 입니다.",
       });
+      return; // 리턴하지 않으면 조건 성립안해도 넘어감 -> 함수종료해줘야함
     }
 
     try {
@@ -87,6 +89,10 @@ export default function TaskPage() {
           title: "TASK 저장을 완료하였습니다.",
           description: "수정한 TASK의 일정 Date를 꼭 지켜주세요!",
         });
+        /**  서버에서 데이터 갱신후 상태값 실시간 반영영 저장
+         *   SideNavigation 컴포넌트 리스트 정보를 실시간으로 업데이트 하기 위해 getTasks 함수를 호출
+         * **/
+        getTasks();
       }
 
       if (error) {
@@ -152,6 +158,7 @@ export default function TaskPage() {
             {/* 날짜 조회용으로 onChangeg함수 필요없음 value 데이터만 들어감 onChange? */}
             <LabelDatePicker label={"From"} value={startDate} onChange={setStartDate} /> /
             <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
+            {/* 현제날짜보다 이전 선택이 안되게 해야하는데 패쓰 */}
           </div>
           <Button
             className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] 
