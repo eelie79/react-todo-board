@@ -18,12 +18,12 @@ import Image from "next/image";
 export default function TaskPage() {
   const router = useRouter();
   const { id } = useParams();
-  const { task } = useGetTaskById(Number(id));
+  const { task, getTaskById } = useGetTaskById(Number(id)); // 특정 id 단일 TASK 데이터 조회
   const createBoard = useCreateBoard(); // 보더 컨텐츠 값을 받아서 supabase에 저장 insertRowData(newContents);
 
   // const [sidebarState, setSidebarState] = useAtom(sidebarStateAtom);
   const [title, setTitle] = useState<string>("");
-  // TODO 전체 boards 데이터 Todo | (() => Todo) 부라우져가 초기화 되면 데이터 날아감
+  // TODO 전체 boards 데이터 Todo | (() => Todo) 브라우져가 초기화 되면 데이터 날아감
   const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -33,7 +33,7 @@ export default function TaskPage() {
       setTitle(task.title || "");
       setStartDate(task.start_date ? new Date(task.start_date) : undefined);
       setEndDate(task.end_date ? new Date(task.end_date) : undefined);
-      setBoards(task.contents);
+      setBoards(task.contents); // 데이터 베이스 contents에 보드 데이터 입력
     }
   }, [task]);
 
@@ -120,7 +120,8 @@ export default function TaskPage() {
         {/* 캘린더 + ADD New Board 버튼 섹션션 */}
         <div className={styles.header__bottom}>
           <div className="flex items-center gap-5">
-            <LabelDatePicker label={"From"} value={startDate} />
+            {/* 날짜 조회용으로 onChangeg함수 필요없음 value 데이터만 들어감 onChange? */}
+            <LabelDatePicker label={"From"} value={startDate} /> /
             <LabelDatePicker label={"To"} value={endDate} />
           </div>
           <Button

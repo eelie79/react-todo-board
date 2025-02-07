@@ -1,6 +1,6 @@
 "use Client";
 
-import { useAtom } from "jotai";
+import { useAtom } from "jotai"; // 상태관리 라이브러리
 import { tasksAtom } from "@/store/atoms";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "@/hooks/use-toast";

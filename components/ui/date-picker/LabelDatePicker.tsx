@@ -5,13 +5,13 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Calendar, Button, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 
 interface Props {
   label: string;
   readonly?: boolean;
-  value: Date | undefined;
-  onChange?: (date: Date | undefined) => void; // 조회용 이라 값이 없을수 있다
+  value: Date | undefined; // 날짜 값
+  onChange?: (date: Date | undefined) => void; // 날짜 클릭시 조회용 이라 onChange 함수는 필요 없을수 있다
 }
 
 export function LabelDatePicker({ label, readonly, value, onChange }: Props) {

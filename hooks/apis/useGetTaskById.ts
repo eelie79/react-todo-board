@@ -6,14 +6,16 @@ import { taskAtom } from "@/store/atoms";
 import { supabase } from "@/utils/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
+// task ID에 해당하는 데이터만 조회
 function useGetTaskById(taskId: Number) {
-  const [task, setTask] = useAtom(taskAtom);
+  const [task, setTask] = useAtom(taskAtom); // 단일 데이터 조회
 
   const getTaskById = async () => {
     try {
+      // .eq("id", taskId); ID가 동일한 데이터만 data에 반환
       const { data, status, error } = await supabase.from("todos").select("*").eq("id", taskId);
 
-      if (data && status === 200) setTask(data[0]); // 조회 status 200
+      if (data && status === 200) setTask(data[0]); // 조회 status 200 배열 데이터중 첫번째 1개만 task에 담기
 
       if (error) {
         toast({
@@ -32,6 +34,7 @@ function useGetTaskById(taskId: Number) {
     }
   };
 
+  // taskId가 있고 아이디가 바뀔때 마다
   useEffect(() => {
     if (taskId) getTaskById();
   }, [taskId]);
