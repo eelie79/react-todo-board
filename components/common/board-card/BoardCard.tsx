@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/utils/supabase/client";
 
@@ -8,6 +8,7 @@ import { Task, Board } from "@/types";
 import { Button, Checkbox, Card, LabelDatePicker, Separator } from "@/components/ui";
 import { ChevronUp, Ghost } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
+import { useDeleteBoard } from "@/hooks/apis";
 
 interface Props {
   board: Board;
@@ -16,8 +17,12 @@ interface Props {
 
 // board.isCompleted / board.title / board.startDate 데이터 연결
 export function BoardCard({ board }: Props) {
-  const pathname = usePathname();
-  const { toast } = useToast();
+  const { id } = useParams();
+  // TASK의 개별 TODO-BOARD 삭제(TODO-BOARD 1건 삭제)
+  const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
+
+  // const pathname = usePathname();
+  // const { toast } = useToast();
 
   // const handleDelete = async (id: string | number) => {
   //   console.log("handleDelete 출력 확인");
@@ -109,15 +114,15 @@ export function BoardCard({ board }: Props) {
       <div className="w-full flex items-center justify-between">
         {/* 캘린더 박스 */}
         <div className="flex items-center gap-5">
-          <LabelDatePicker label={"From"} value={board.startDate} />
-          <LabelDatePicker label={"To"} value={board.endDate} />
+          <LabelDatePicker label={"From"} value={board.startDate} readonly={true} />
+          <LabelDatePicker label={"To"} value={board.endDate} readonly={true} />
         </div>
         {/* 버튼 박스  */}
         <div className="flex items-center gap-2">
           <Button variant={"ghost"} className="font-normal text-[#6d6d6d]">
             Duplicate
           </Button>
-          <Button variant={"ghost"} className="font-normal text-rose-600 hover:text-rose-600 hover:bg-rose-50">
+          <Button variant={"ghost"} className="font-normal text-rose-600 hover:text-rose-600 hover:bg-rose-50" onClick={handleDeleteBoard}>
             Delete
           </Button>
         </div>
