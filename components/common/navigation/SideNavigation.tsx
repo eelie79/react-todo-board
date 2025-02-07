@@ -7,7 +7,7 @@ import { Button, SearchBar } from "@/components/ui";
 import { useGetTasks, useCreateTask } from "@/hooks/apis";
 import { Task, Board } from "@/types";
 
-export default function SideNavigation() {
+export function SideNavigation() {
   const router = useRouter();
   const { id } = useParams();
   const { tasks, getTasks } = useGetTasks();

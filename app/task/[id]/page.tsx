@@ -9,7 +9,7 @@ import { nanoid } from "nanoid";
 import { Task, Board } from "@/types";
 import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
-import { BoardCard } from "@/components/common";
+import { BoardCard, DeleteTaskPopup } from "@/components/common";
 import { ChevronLeft } from "lucide-react";
 
 import styles from "./page.module.scss";
@@ -94,10 +94,12 @@ export default function TaskPage() {
             <Button variant={"secondary"} onClick={handleSave}>
               저장
             </Button>
-            <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">
-              삭제
-              {/* onClick={handleDelete} */}
-            </Button>
+            <DeleteTaskPopup>
+              <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">
+                삭제
+                {/* onClick={handleDelete} */}
+              </Button>
+            </DeleteTaskPopup>
           </div>
         </div>
         <div className={styles.header__top}>

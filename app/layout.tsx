@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import { Roboto } from "next/font/google";
+import { SideNavigation } from "@/components/common";
+import { Toaster } from "@/components/ui";
 import "@/styles/globals.css";
 import "@/styles/main.scss";
-
-import SideNavigation from "@/components/common/navigation/SideNavigation";
-
-import { Toaster } from "@/components/ui";
 
 // const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
