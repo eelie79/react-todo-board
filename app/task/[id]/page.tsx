@@ -31,7 +31,7 @@ export default function TaskPage() {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-  const [count, setCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(0); // 프로그래스바 카운팅
 
   useEffect(() => {
     if (task) {
@@ -50,7 +50,7 @@ export default function TaskPage() {
     // 보드 컨텐츠 입력 객체 리터럴 초기값
     const newBoard: Board = {
       id: nanoid(),
-      isCompleted: true,
+      isCompleted: false,
       title: "",
       startDate: undefined,
       endDate: undefined,
@@ -116,11 +116,10 @@ export default function TaskPage() {
     }
   };
 
+  // getTaskById 에 의해 변경될떄
   useEffect(() => {
     if (task?.contents) {
-      const completedCount = task.contents.filter((board: Board) => {
-        board.isCompleted;
-      }).length;
+      const completedCount = task.contents.filter((board: Board) => board.isCompleted).length; // 갯수 카운트트
       setCount(completedCount);
     }
   }, [task?.contents]);
@@ -172,10 +171,7 @@ export default function TaskPage() {
             <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
             {/* 현제날짜보다 이전 선택이 안되게 해야하는데 패쓰 */}
           </div>
-          <Button
-            className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] 
-        hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg"
-            onClick={handleAddBoard}>
+          <Button className="text-white bg-[#E79057] hover:bg-[#E79057] hover:ring-1 hover:ring-[#E79057] hover:ring-offset-1 active:bg-[#D5753D] hover:shadow-lg" onClick={handleAddBoard}>
             ADD NEW BOARD
           </Button>
         </div>
