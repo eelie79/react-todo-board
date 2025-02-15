@@ -1,16 +1,18 @@
 "use client";
 
 // shadcn ui
-import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button, SearchBar } from "@/components/ui";
-import { useGetTasks, useCreateTask } from "@/hooks/apis";
+import { useGetTasks, useCreateTask, useSearch } from "@/hooks/apis";
 import { Task, Board } from "@/types";
 
 export function SideNavigation() {
   const router = useRouter();
   const { id } = useParams();
   const { tasks, getTasks } = useGetTasks();
+  const { search } = useSearch();
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   /*  getTasks는 컴포넌트 최초 렌더링시 한번만 호출 되어야 하므로 useEffect로 호출 */
   useEffect(() => {
@@ -20,11 +22,22 @@ export function SideNavigation() {
   // 페이지 연동 및 Supabase 연동 - Task 생성 hooks 사용
   const handleCreateTask = useCreateTask();
 
+  const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value); // 검색어 담기
+  };
+
+  const handleSearch = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      /** useSearch 훅이 동작하도록 한다. **/
+      search(searchTerm);
+    }
+  };
+
   return (
     <aside className="page__aside">
       <div className="flex flex-col h-full gap-3">
         {/* 검색창 */}
-        <SearchBar placeholder="검색어를 입력하세요" />
+        <SearchBar placeholder="검색어를 입력하세요" onChange={handleSearchTermChange} onKeyDown={handleSearch} />
         {/* Add New Page 버튼 UI */}
         <Button className="text-[#E79057] bg-white border border-[#E79057] hover:bg-[#fff9f5]" onClick={handleCreateTask}>
           Add New Page

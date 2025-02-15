@@ -26,52 +26,55 @@ export function BoardCard({ board }: Props) {
   // TASK의 개별 TODO-BOARD 삭제(TODO-BOARD - todo 카드 1건 삭제)
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
 
-  // ~~~~ 여기서 부터 주석처리 시작작
+  // ~~~~ 여기서 부터 주석처리 시작
 
-  // const updateBoards = useCreateBoard();
-  // const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
-  // // const { getTaskById } = useGetTaskById(Number(id));
+  const updateBoards = useCreateBoard();
+  const { getTaskById } = useGetTaskById(Number(id)); // 특정 id 단일 TASK 데이터 조회
 
-  // const [startDate, setStartDate] = useState<Date | undefined>(board.startDate ? new Date(board.startDate) : undefined);
-  // const [endDate, setEndDate] = useState<Date | undefined>(board.endDate ? new Date(board.endDate) : undefined);
+  const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
+  // const { getTaskById } = useGetTaskById(Number(id));
 
-  // const handleSaveBoard = async (boardId: string) => {
-  //   if (!board.title) {
-  //     // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
-  //     toast({
-  //       variant: "destructive",
-  //       title: "TODO-BOARD를 저장 할 수 없습니다.",
-  //       description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
-  //     });
-  //     return;
-  //   }
-  //   if (!startDate || !endDate) {
-  //     // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
-  //     toast({
-  //       title: "TODO-BOARD를 저장 할 수 없습니다.",
-  //       description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
-  //     });
-  //     return;
-  //   }
+  const [startDate, setStartDate] = useState<Date | undefined>(board.startDate ? new Date(board.startDate) : undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(board.endDate ? new Date(board.endDate) : undefined);
 
-  //   // 해당 보드에 대한 데이터만 수정
-  //   try {
-  //     const newBoards = task?.contents.map((board: Board) => {
-  //       if (board.id === boardId) {
-  //         return { ...board, startDate, endDate }; // 변경된 값만 변경
-  //       }
-  //       return board;
-  //     });
-  //     await updateBoards(Number(id), "contents", newBoards);
-  //   } catch (error) {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "네트워크 오류",
-  //       description: "서버와 연결할 수 없습니다. 다시 시도해 주세요!",
-  //     });
-  //     throw error;
-  //   }
-  // };
+  const handleSaveBoard = async (boardId: string) => {
+    if (!board.title) {
+      // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+      toast({
+        variant: "destructive",
+        title: "TODO-BOARD를 저장 할 수 없습니다.",
+        description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
+      });
+      return;
+    }
+    if (!startDate || !endDate) {
+      // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+      toast({
+        title: "TODO-BOARD를 저장 할 수 없습니다.",
+        description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
+      });
+      return;
+    }
+
+    // 해당 보드에 대한 데이터만 수정
+    try {
+      const newBoards = task?.contents.map((board: Board) => {
+        if (board.id === boardId) {
+          return { ...board, startDate, endDate }; // 변경된 값만 변경
+        }
+        return board;
+      });
+      await updateBoards(Number(id), "contents", newBoards);
+      getTaskById();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "네트워크 오류",
+        description: "서버와 연결할 수 없습니다. 다시 시도해 주세요!",
+      });
+      throw error;
+    }
+  };
 
   // ~~~~ 여기서 부터 주석처리 끝끝
 
@@ -173,16 +176,16 @@ export function BoardCard({ board }: Props) {
           <LabelDatePicker label={"To"} value={board.endDate} readonly={true} /> */}
           {/* <LabelDatePicker label={"From"} value={board.startDate} onChange={setStartDate} />
           <LabelDatePicker label={"To"} value={board.endDate} onChange={setEndDate} /> */}
-          <LabelDatePicker label={"From"} readonly={true} value={board.startDate} />
-          <LabelDatePicker label={"To"} readonly={true} value={board.endDate} />
-          {/* <LabelDatePicker label={"From"} value={board.startDate} onChange={setStartDate} />
-          <LabelDatePicker label={"To"} value={board.endDate} onChange={setEndDate} /> */}
+          {/* <LabelDatePicker label={"From"} readonly={true} value={board.startDate} />
+          <LabelDatePicker label={"To"} readonly={true} value={board.endDate} /> */}
+          <LabelDatePicker label={"From"} value={board.startDate} onChange={setStartDate} />
+          <LabelDatePicker label={"To"} value={board.endDate} onChange={setEndDate} />
         </div>
         {/* 버튼 박스  */}
         <div className="flex items-center gap-2">
-          {/* <Button variant={"ghost"} className="font-normal text-[#6d6d6d]" onClick={() => handleSaveBoard(board.id)}>
-           Duplicate 
-          </Button> */}
+          <Button variant={"ghost"} className="font-normal text-[#6d6d6d]" onClick={() => handleSaveBoard(board.id)}>
+            Save
+          </Button>
           <Button variant={"ghost"} className="font-normal text-rose-600 hover:text-rose-600 hover:bg-rose-50" onClick={handleDeleteBoard}>
             Delete
           </Button>

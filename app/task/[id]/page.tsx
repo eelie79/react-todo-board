@@ -96,6 +96,7 @@ export default function TaskPage() {
          *   SideNavigation 컴포넌트 리스트 정보를 실시간으로 업데이트 하기 위해 getTasks 함수를 호출
          * **/
         getTasks();
+        // getTaskById(); -> BoardCard -> 에서 업데이트
       }
 
       if (error) {
