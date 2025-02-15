@@ -10,9 +10,11 @@ import { toast } from "@/hooks/use-toast";
 
 import { Task, Board } from "@/types";
 import { Button, Checkbox, Card, LabelDatePicker, Separator } from "@/components/ui";
-import { ChevronUp, Ghost } from "lucide-react";
+import { ChevronDown, ChevronUp, Ghost } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
 import { useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
+
+import MDEditor from "@uiw/react-md-editor";
 
 interface Props {
   board: Board;
@@ -36,6 +38,8 @@ export function BoardCard({ board }: Props) {
 
   const [startDate, setStartDate] = useState<Date | undefined>(board.startDate ? new Date(board.startDate) : undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(board.endDate ? new Date(board.endDate) : undefined);
+  // const [content] = useState<string>(board.content ? board.content : "");
+  const [isShowContent, setIsShowContent] = useState<boolean>(false);
 
   const handleSaveBoard = async (boardId: string) => {
     if (!board.title) {
@@ -157,15 +161,16 @@ export function BoardCard({ board }: Props) {
   return (
     <Card className="w-full flex flex-col items-center p-5">
       {/* 게시물 카드 제목 영역 */}
-      <div className="w-full flex flex-col items-center justify-between mb-4">
+      <div className="w-full flex items-center justify-between mb-4">
         <div className="w-full flex items-center justify-start gap-2">
           <Checkbox className="h-5 w-5" checked={board.isCompleted} />
           {/* <input type="text" placeholder="등록된 제목이 없습니다" value={board.title} className="w-full text-xl outline-none bg-transparent" disabled={true} /> */}
           <input type="text" placeholder="등록된 제목이 없습니다." value={board.title} className="w-full text-xl outline-none bg-transparent" disabled={true} />
           {/* 조회용 인풋 */}
         </div>
-        <Button variant={"ghost"} size={"icon"}>
-          <ChevronUp className="text-[#6d6d6d]" />
+        {/* <Button variant={"ghost"} size={"icon"} onClick={() => setIsShowContent(true)}> */}
+        <Button variant={"ghost"} size={"icon"} onClick={() => setIsShowContent(!isShowContent)}>
+          {isShowContent ? <ChevronUp className="text-[#6d6d6d]" /> : <ChevronDown className="text-[#6d6d6d]" />}
         </Button>
       </div>
       {/* 캘린더 및 버튼 박스 영역 */}
@@ -191,6 +196,9 @@ export function BoardCard({ board }: Props) {
           </Button>
         </div>
       </div>
+
+      {/* <MDEditor height={320 + "px"} value={board.content ? board.content : ""} /> */}
+      {isShowContent && <MDEditor height={320 + "px"} value={board.content ? board.content : "**Hello, World!!**"} style={{ width: 100 + "%", marginTop: 16 + "px" }} />}
 
       <Separator className="my-3" />
 
