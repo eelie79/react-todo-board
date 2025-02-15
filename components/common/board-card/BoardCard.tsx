@@ -1,14 +1,18 @@
 "use client";
 
-import { useParams, usePathname } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/utils/supabase/client";
+import { useState } from "react";
+import { useParams } from "next/navigation";
+
+import { taskAtom } from "@/store/atoms";
+import { useAtomValue } from "jotai";
+
+import { toast } from "@/hooks/use-toast";
 
 import { Task, Board } from "@/types";
 import { Button, Checkbox, Card, LabelDatePicker, Separator } from "@/components/ui";
 import { ChevronUp, Ghost } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
-import { useDeleteBoard } from "@/hooks/apis";
+import { useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
 
 interface Props {
   board: Board;
@@ -18,8 +22,53 @@ interface Props {
 // board.isCompleted / board.title / board.startDate 데이터 연결
 export function BoardCard({ board }: Props) {
   const { id } = useParams();
-  // TASK의 개별 TODO-BOARD 삭제(TODO-BOARD 1건 삭제)
+  // TASK의 개별 TODO-BOARD 삭제(TODO-BOARD - todo 카드 1건 삭제)
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
+
+  const updateBoards = useCreateBoard();
+  const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
+  // const { getTaskById } = useGetTaskById(Number(id));
+
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
+  const handleSaveBoard = async (boardId: string) => {
+    if (!board.title) {
+      // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+      toast({
+        variant: "destructive",
+        title: "TODO-BOARD를 저장 할 수 없습니다.",
+        description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
+      });
+      return;
+    }
+    if (!startDate || !endDate) {
+      // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+      toast({
+        title: "TODO-BOARD를 저장 할 수 없습니다.",
+        description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
+      });
+      return;
+    }
+
+    // 해당 보드에 대한 데이터만 수정
+    try {
+      const newBoards = task?.contents.map((board: Board) => {
+        if (board.id === boardId) {
+          return { ...board, startDate, endDate }; // 변경된 값만 변경
+        }
+        return board;
+      });
+      await updateBoards(Number(id), "contents", newBoards);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "네트워크 오류",
+        description: "서버와 연결할 수 없습니다. 다시 시도해 주세요!",
+      });
+      throw error;
+    }
+  };
 
   // const pathname = usePathname();
   // const { toast } = useToast();
@@ -120,7 +169,7 @@ export function BoardCard({ board }: Props) {
         {/* 버튼 박스  */}
         <div className="flex items-center gap-2">
           <Button variant={"ghost"} className="font-normal text-[#6d6d6d]">
-            Duplicate
+            {/* Duplicate */} Save
           </Button>
           <Button variant={"ghost"} className="font-normal text-rose-600 hover:text-rose-600 hover:bg-rose-50" onClick={handleDeleteBoard}>
             Delete

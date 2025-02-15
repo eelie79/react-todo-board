@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/utils/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 function useDeleteTask() {
   const router = useRouter();
@@ -14,8 +14,10 @@ function useDeleteTask() {
       if (status === 201) {
         toast({
           title: "선택한 TASK 가 삭제 되었습니다.",
-          description: "TASK가가 TODO-BOARD에서 삭제 되었습니다!",
+          description: "TASK가 TODO-BOARD에서 삭제 되었습니다!",
         });
+
+        // .delete() 삭제 된후 페이지를 초기 메인으로 넘김
         router.push("/"); // 초기 페이지로 이동
       }
 
@@ -37,7 +39,7 @@ function useDeleteTask() {
     }
   };
 
-  return deleteTask;
+  return { deleteTask };
 }
 
 export { useDeleteTask };

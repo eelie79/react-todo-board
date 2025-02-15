@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import { taskAtom } from "@/store/atoms";
 
 import MDEditor from "@uiw/react-md-editor";
-import { useCreateBoard } from "@/hooks/apis";
+import { useCreateBoard, useGetTaskById } from "@/hooks/apis";
 import { useToast } from "@/hooks/use-toast";
 
 import { Button, Checkbox, Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger, DialogClose, DialogDescription, LabelDatePicker, Separator } from "@/components/ui";
@@ -23,17 +23,17 @@ interface Props {
 export function MarkdownDialog({ board, children }: Props) {
   const { toast } = useToast();
   const { id } = useParams();
-  const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
   // const createBoard = useCreateBoard(); // page.tsx에서는 createBoard
   const updateBoards = useCreateBoard();
+
+  const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
+  const { getTaskById } = useGetTaskById(Number(id));
 
   /* 해당 컴포넌트에서 사용되는 상태 값 */
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
-
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-
   const [content, setContent] = useState<string | undefined | "">("**Hello, World!!**");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
@@ -48,8 +48,10 @@ export function MarkdownDialog({ board, children }: Props) {
 
   // board 내용이 바뀌면 initState 호출출
   useEffect(() => {
-    initState();
-  }, [board]);
+    if (isDialogOpen) {
+      initState(); // Dialog가 true 열릴때만 상태 초기화화
+    }
+  }, [isDialogOpen]); // isDialogOpen이 변경 될떼만 실행
 
   // 다이얼로그 닫힐때 초기화
   const handleCloseDialog = () => {
@@ -70,19 +72,20 @@ export function MarkdownDialog({ board, children }: Props) {
       });
       return;
     }
-
     // 해당 Board에 대한 데이터만 수정
     try {
       /* contents 배열에서 선택한 board를 찾고, 수정된 값으로 업데이트 / task는 null일수 있음 */
       const newBoards = task?.contents.map((board: Board) => {
         if (board.id === boardId) {
           // 클릭했을때 넘겨주는 id 하고 같으면
-          return { ...board, isCompleted, title, start_date: startDate, end_date: endDate, content }; // 변경된 값만 변경
+          console.log(startDate, endDate);
+          return { ...board, isCompleted, title, startDate, endDate, content }; // 변경된 값만 변경
         }
         return board;
       });
       await updateBoards(Number(id), "contents", newBoards); // contents 뉴데이터로 치환 -> 데이터 업데이트 훅
       handleCloseDialog(); // 초기값 세팅
+      getTaskById(); //화면 ui가 갱신되지 않아서 저장되는 순간 화면에 데이터 갱신
     } catch (error) {
       /* 네트워크 오류나 애기치 않은 에러를 잡기 위해 catch 구문 사용 */
       toast({
@@ -95,8 +98,9 @@ export function MarkdownDialog({ board, children }: Props) {
   };
 
   return (
-    //  modal={false}
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    // Dialog 컴포넌트 안에 LabelDatePicker 를 사용할때는 modal={false}속성이 들어가야함
+    // modal={false}
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
       {/* {board.title ? (
         <DialogTrigger asChild>{children}</DialogTrigger>
       ) : (
@@ -134,10 +138,10 @@ export function MarkdownDialog({ board, children }: Props) {
 
         {/* 캘린더 박스 */}
         <div className="flex items-center gap-5">
-          {/* <LabelDatePicker label="From" value={startDate} handleDate={setStartDate} />
-        <LabelDatePicker label="To" value={endDate} onChange={setEndDate} /> */}
-          <LabelDatePicker label={"From"} value={startDate} onChange={setStartDate} /> /
-          <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
+          {/* <LabelDatePicker label={"From"} value={startDate} readonly={true} /> /
+          <LabelDatePicker label={"To"} value={endDate} readonly={true} /> */}
+          <LabelDatePicker label="From" value={startDate} onChange={setStartDate} />
+          <LabelDatePicker label="To" value={endDate} onChange={setEndDate} />
         </div>
 
         <Separator />
@@ -153,13 +157,7 @@ export function MarkdownDialog({ board, children }: Props) {
               취소
             </Button>
           </DialogClose>
-          <Button
-            type="submit"
-            variant={"ghost"}
-            className="font-normal border-orange-500 bg-orange-400 text-white hover:bg-orange-400 hover:text-white"
-            // onClick={onSubmit}  => onSubmit(data.boardId) 클릭이벤트 데이터 가져와서 ID전달
-            // onClick={() => onSubmit(data.boardId)}
-            onClick={() => handleSubmit(board.id)}>
+          <Button type="submit" variant={"ghost"} className="font-normal border-orange-500 bg-orange-400 text-white hover:bg-orange-400 hover:text-white" onClick={() => handleSubmit(board.id)}>
             등록
           </Button>
         </DialogFooter>

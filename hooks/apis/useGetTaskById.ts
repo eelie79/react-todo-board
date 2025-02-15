@@ -7,7 +7,7 @@ import { supabase } from "@/utils/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 // task ID에 해당하는 데이터만 조회
-function useGetTaskById(taskId: Number) {
+function useGetTaskById(taskId: number) {
   const [task, setTask] = useAtom(taskAtom); // 단일 데이터 조회
 
   const getTaskById = async () => {

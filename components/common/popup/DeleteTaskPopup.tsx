@@ -11,7 +11,9 @@ interface Props {
 
 function DeleteTaskPopup({ children }: Props) {
   const { id } = useParams();
-  const handleDeleteTask = useDeleteTask(); // const deleteTask: (taskId: number) => Promise<void>
+  // const handleDeleteTask = useDeleteTask(); // const deleteTask: (taskId: number) => Promise<void>
+  const { deleteTask } = useDeleteTask(); // const deleteTask: (taskId: number) => Promise<void>
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -26,7 +28,7 @@ function DeleteTaskPopup({ children }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDeleteTask(Number(id))} className="bg-red-500 hover:bg-red-500">
+          <AlertDialogAction onClick={() => deleteTask(Number(id))} className="bg-red-500 hover:bg-red-500">
             삭제
           </AlertDialogAction>
         </AlertDialogFooter>

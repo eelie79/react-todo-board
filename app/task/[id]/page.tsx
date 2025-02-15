@@ -9,8 +9,8 @@ import { toast, useToast } from "@/hooks/use-toast";
 import { supabase } from "@/utils/supabase/client";
 
 import { Task, Board } from "@/types";
-import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { useCreateBoard, useGetTaskById, useGetTasks } from "@/hooks/apis";
+import { Button, Progress, LabelDatePicker } from "@/components/ui";
 import { BoardCard, DeleteTaskPopup } from "@/components/common";
 import { ChevronLeft } from "lucide-react";
 
@@ -30,6 +30,8 @@ export default function TaskPage() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
+  const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
     if (task) {
@@ -69,13 +71,14 @@ export default function TaskPage() {
         title: "기입되지 않은 데이터(값)가 있습니다.",
         description: "제목, 시작일, 종료일은 필수값 입니다.",
       });
-      return; // 리턴하지 않으면 조건 성립안해도 넘어감 -> 함수종료해줘야함
+      return; // 리턴하지 않으면 조건 성립안해도 넘어감 -> 함수종료 해줘야함
     }
 
     try {
       const { data, error, status } = await supabase
         .from("todos")
         .update({
+          // 데이터 베이스 테이블 명 키 : 작업 상태관리 값
           title: title,
           start_date: startDate,
           end_date: endDate,
@@ -113,6 +116,15 @@ export default function TaskPage() {
     }
   };
 
+  useEffect(() => {
+    if (task?.contents) {
+      const completedCount = task.contents.filter((board: Board) => {
+        board.isCompleted;
+      }).length;
+      setCount(completedCount);
+    }
+  }, [task?.contents]);
+
   const handleDelete = () => {};
 
   return (
@@ -128,10 +140,7 @@ export default function TaskPage() {
               저장
             </Button>
             <DeleteTaskPopup>
-              <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">
-                삭제
-                {/* onClick={handleDelete} */}
-              </Button>
+              <Button className="text-rose-600 bg-red-50 hover:bg-rose-50">삭제 {/* onClick={handleDelete} */}</Button>
             </DeleteTaskPopup>
           </div>
         </div>
@@ -148,8 +157,11 @@ export default function TaskPage() {
           />
           {/* 진행상황 척도 그래프 섹션 */}
           <div className="flex items-center justify-start gap-4">
-            <small className="text-sm font-medium leading-none text-[#6d6d6d]">1/10 Completed!</small>
-            <Progress className="w-60 h-[10px]" value={33} indicatorColor={"bg-[#0cf5ce]"} />
+            {/* <small className="text-sm font-medium leading-none text-[#6d6d6d]">1/10 Completed!</small> */}
+            <small className="text-sm font-medium leading-none text-[#6d6d6d]">
+              {count}/{task?.contents.length} Completed!
+            </small>
+            <Progress className="w-60 h-[10px]" value={task && task.contents.length > 0 ? (count / task.contents.length) * 100 : 0} indicatorColor={"bg-[#0cf5ce]"} />
           </div>
         </div>
         {/* 캘린더 + ADD New Board 버튼 섹션션 */}

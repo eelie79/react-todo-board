@@ -9,8 +9,9 @@ import { Task, Board } from "@/types";
 
 // contents[] 배열 데이터 안에 있는 "id"값을 찾아서 삭제한 다음에 다시 업데이트
 function useDeleteBoard(taskId: number, boardId: string) {
-  const [task] = useAtom(taskAtom);
-  const { getTaskById } = useGetTaskById(taskId);
+  // taskId 페이지 / boardId 등록 todolist
+  const [task] = useAtom(taskAtom); // 삭제할때 contents안의 배열을 삭제 -> contents id값 찾아서 배열 업데이트
+  const { getTaskById } = useGetTaskById(taskId); // 컬럼 데이터 하나 호출 조회
 
   const deleteBoard = async () => {
     try {
