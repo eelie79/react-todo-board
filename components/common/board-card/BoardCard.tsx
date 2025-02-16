@@ -183,8 +183,8 @@ export function BoardCard({ board }: Props) {
           <LabelDatePicker label={"To"} value={board.endDate} onChange={setEndDate} /> */}
           {/* <LabelDatePicker label={"From"} readonly={true} value={board.startDate} />
           <LabelDatePicker label={"To"} readonly={true} value={board.endDate} /> */}
-          <LabelDatePicker label={"From"} value={board.startDate} onChange={setStartDate} />
-          <LabelDatePicker label={"To"} value={board.endDate} onChange={setEndDate} />
+          <LabelDatePicker label={"From"} value={startDate} onChange={setStartDate} />
+          <LabelDatePicker label={"To"} value={endDate} onChange={setEndDate} />
         </div>
         {/* 버튼 박스  */}
         <div className="flex items-center gap-2">
