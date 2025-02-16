@@ -18,9 +18,10 @@ interface Props {
   // data: Board;
   board: Board;
   // updateBoards: () => void;
+  open: boolean;
 }
 
-export function MarkdownDialog({ board, children }: Props) {
+export function MarkdownDialog({ board, children, open }: Props) {
   const { toast } = useToast();
   const { id } = useParams();
   // const createBoard = useCreateBoard(); // page.tsx에서는 createBoard
@@ -51,6 +52,7 @@ export function MarkdownDialog({ board, children }: Props) {
     if (isDialogOpen) {
       initState(); // Dialog가 true 열릴때만 상태 초기화화
     }
+    // initState();
   }, [isDialogOpen]); // isDialogOpen이 변경 될떼만 실행
 
   // 다이얼로그 닫힐때 초기화

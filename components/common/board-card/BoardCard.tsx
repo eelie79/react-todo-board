@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 
-import { taskAtom } from "@/store/atoms";
 import { useAtomValue } from "jotai";
+import { taskAtom } from "@/store/atoms";
 
 import { toast } from "@/hooks/use-toast";
 
@@ -12,7 +12,7 @@ import { Task, Board } from "@/types";
 import { Button, Checkbox, Card, LabelDatePicker, Separator } from "@/components/ui";
 import { ChevronDown, ChevronUp, Ghost } from "lucide-react";
 import { MarkdownDialog } from "@/components/common";
-import { useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
+import { useGetTasks, useCreateBoard, useDeleteBoard, useGetTaskById } from "@/hooks/apis";
 
 import MDEditor from "@uiw/react-md-editor";
 
@@ -24,34 +24,56 @@ interface Props {
 // board.isCompleted / board.title / board.startDate 데이터 연결
 export function BoardCard({ board }: Props) {
   const { id } = useParams();
+  const { tasks, getTasks } = useGetTasks();
 
   // TASK의 개별 TODO-BOARD 삭제(TODO-BOARD - todo 카드 1건 삭제)
   const handleDeleteBoard = useDeleteBoard(Number(id), board.id);
-
-  // ~~~~ 여기서 부터 주석처리 시작
-
   const updateBoards = useCreateBoard();
-  const { getTaskById } = useGetTaskById(Number(id)); // 특정 id 단일 TASK 데이터 조회
 
   const task = useAtomValue(taskAtom); // 조회용 단일 데이터 호출
-  // const { getTaskById } = useGetTaskById(Number(id));
+  const { getTaskById } = useGetTaskById(Number(id)); // 특정 id 단일 TASK 데이터 조회
 
+  const [isCompleted, setIsCompleted] = useState<boolean>(board.isCompleted ? board.isCompleted : false);
+  const [title, setTitle] = useState<string>(board.title ? board.title : "");
   const [startDate, setStartDate] = useState<Date | undefined>(board.startDate ? new Date(board.startDate) : undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(board.endDate ? new Date(board.endDate) : undefined);
   // const [content] = useState<string>(board.content ? board.content : "");
   const [isShowContent, setIsShowContent] = useState<boolean>(false);
+  const [test, setTest] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+  // board 내용이 바뀌면 initState 호출출
+  // useEffect(() => {
+  //   initState(); // Dialog가 true 열릴때만 상태 초기화화
+  // }, [task]); // isDialogOpen이 변경 될떼만 실행
+
+  // board 내용이 바뀌면 initState 호출출
+  // useEffect(() => {
+  //   if (isDialogOpen) {
+  //     setIsDialogOpen(false); // 창닫기
+  //     initState(); // Dialog가 true 열릴때만 상태 초기화화
+  //   }
+  // }, [isDialogOpen]); // isDialogOpen이 변경 될떼만 실행
+
+  // 다이얼로그 닫힐때 초기화
+  const initState = () => {
+    setIsCompleted(board.isCompleted || false);
+    setTitle(board.title || "");
+    setStartDate(board.startDate ? new Date(board.startDate) : undefined);
+    setEndDate(board.endDate ? new Date(board.endDate) : undefined);
+  };
 
   const handleSaveBoard = async (boardId: string) => {
-    if (!board.title) {
-      // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
-      toast({
-        variant: "destructive",
-        title: "TODO-BOARD를 저장 할 수 없습니다.",
-        description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
-      });
-      return;
-    }
-    if (!startDate || !endDate) {
+    // if (!board.title) {
+    //   // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
+    //   toast({
+    //     variant: "destructive",
+    //     title: "TODO-BOARD를 저장 할 수 없습니다.",
+    //     description: "TODO-BOARD를 저장하기전 제목을 먼저 등록해주세요",
+    //   });
+    //   return;
+    // }
+    if (!title || !startDate || !endDate) {
       // 올바르게 todos 테이블에 ROW 데이터 한 줄이 올바르게 생성이 되면 실행
       toast({
         title: "TODO-BOARD를 저장 할 수 없습니다.",
@@ -64,11 +86,14 @@ export function BoardCard({ board }: Props) {
     try {
       const newBoards = task?.contents.map((board: Board) => {
         if (board.id === boardId) {
-          return { ...board, startDate, endDate }; // 변경된 값만 변경
+          console.log(title, startDate, endDate);
+          // return { ...board, title, startDate, endDate }; // 변경된 값만 변경
+          return { ...board, isCompleted, title, startDate, endDate }; // 변경된 값만 변경
         }
         return board;
       });
       await updateBoards(Number(id), "contents", newBoards);
+      // initState(); // 초기값 세팅
       getTaskById();
     } catch (error) {
       toast({
@@ -79,8 +104,6 @@ export function BoardCard({ board }: Props) {
       throw error;
     }
   };
-
-  // ~~~~ 여기서 부터 주석처리 끝끝
 
   // const pathname = usePathname();
   // const { toast } = useToast();
@@ -163,9 +186,28 @@ export function BoardCard({ board }: Props) {
       {/* 게시물 카드 제목 영역 */}
       <div className="w-full flex items-center justify-between mb-4">
         <div className="w-full flex items-center justify-start gap-2">
-          <Checkbox className="h-5 w-5" checked={board.isCompleted} />
+          {/* <Checkbox className="h-5 w-5" checked={board.isCompleted} /> */}
           {/* <input type="text" placeholder="등록된 제목이 없습니다" value={board.title} className="w-full text-xl outline-none bg-transparent" disabled={true} /> */}
-          <input type="text" placeholder="등록된 제목이 없습니다." value={board.title} className="w-full text-xl outline-none bg-transparent" disabled={true} />
+          <Checkbox
+            className="h-5 w-5"
+            // checked={isCompleted}
+            checked={board.isCompleted ? board.isCompleted : isCompleted}
+            onCheckedChange={(checked) => {
+              if (typeof checked === "boolean") {
+                setIsCompleted(checked);
+              }
+            }}
+          />
+          <input
+            type="text"
+            placeholder="등록된 제목이 없습니다."
+            // value={board.title ? board.title : title}
+            value={title}
+            className="w-full text-xl outline-none bg-transparent"
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+          />
           {/* 조회용 인풋 */}
         </div>
         {/* <Button variant={"ghost"} size={"icon"} onClick={() => setIsShowContent(true)}> */}
